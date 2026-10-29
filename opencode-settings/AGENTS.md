@@ -46,6 +46,7 @@
 | Аварийное восстановление | `~/bin/oc-fix.sh` (см. §5) |
 | Чистка списка проектов в БД | `scripts/archive-projects.py` (в этом проекте) |
 | Экспорт для переезда на новый хост | `scripts/export-main-stand.sh` (в этом проекте) |
+| Bootstrap нового хоста (root, один раз) | `scripts/new-host-bootstrap.sh` (в этом проекте) |
 | Бэкапы БД | `~/tmp/opencode-backups/opencode-<дата>.db` (600) |
 
 ### Аутентификация

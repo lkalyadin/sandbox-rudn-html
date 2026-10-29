@@ -168,44 +168,77 @@ nproc; free -m | head -2; df -h /
 
 ---
 
-## 5. Шаг 1 — подготовка хоста (root)
+## 5. Шаг 1 — подготовка хоста: root только у владельца
+
+Модель доступа: **root нужен одному одноразовому скрипту**, после которого разворачивающий агент
+работает под `deployagent` без sudo. Ключ агента в `/root` не кладётся, sudo не выдаётся — отбирать
+после развёртывания нечего.
+
+Что действительно требует root (и почему это нельзя сделать из-под пользователя):
+
+| Действие | Почему root |
+|---|---|
+| создание `deployagent` (uid/gid 1001) + `authorized_keys` | системный пользователь |
+| `loginctl enable-linger` | иначе user-сервисы умирают с сессией и не встают после ребута |
+| `net.ipv4.ip_unprivileged_port_start=80` | Caddy слушает `:4601` (это >1024, не требует), но ACME проверяет 80/443 — без этого порога их не занять без root |
+| swap-файл (`fallocate`/`mkswap`/`swapon`) | CAP_SYS_ADMIN; при 3 ГБ RAM нужен (opencode ~0.6 ГБ + PG + ОС) |
+| `apt install` (git, curl, jq, python3, openssl) | менеджер пакетов |
+| PostgreSQL (если нужен) | системный сервис + данные в `/var/lib/postgresql` |
+| лимит journald, открытие портов в ufw | системные настройки |
+
+Всё остальное — **без root**: opencode (installer в `~/.opencode/bin`), Caddy (`~/bin`), Caddyfile,
+юниты `systemctl --user`, БД OpenCode, проекты, `git clone`, сертификат (Caddy сам).
+
+### 5.1. Что запускает владелец (root, один раз)
+
+Скрипт лежит в репозитории: `scripts/new-host-bootstrap.sh`. Он идемпотентный, ничего не делает
+с `/root`, sshd и docker; сначала можно посмотреть план:
 
 ```bash
-# 1) пользователь с uid/gid 1001 (как на старом хосте — иначе права на файлы из архива разъедутся)
-useradd -u 1001 -U -m -s /bin/bash deployagent
-chmod 750 /home/deployagent
-# ключ для входа (тот же, что сейчас в ~/.ssh/authorized_keys старого хоста)
-install -d -m 700 -o deployagent -g deployagent /home/deployagent/.ssh
-echo '<ПУБЛИЧНЫЙ КЛЮЧ>' > /home/deployagent/.ssh/authorized_keys
-chown deployagent:deployagent /home/deployagent/.ssh/authorized_keys
-chmod 600 /home/deployagent/.ssh/authorized_keys
+# на новом VPS от root
+curl -fsSLO https://raw.githubusercontent.com/lkalyadin/sandbox-rudn-html/main/opencode-settings/scripts/new-host-bootstrap.sh
+less new-host-bootstrap.sh                     # посмотреть, что делает
 
-# 2) linger: без него user-сервисы умирают с SSH-сессией и не встают после ребута
-loginctl enable-linger deployagent
-
-# 3) порт 80 без root (Caddy на :4601 + ACME на :80/443)
-printf 'net.ipv4.ip_unprivileged_port_start=80\n' > /etc/sysctl.d/99-unprivileged-ports.conf
-sysctl --system
-
-# 4) swap (если RAM ≤ 2 ГБ)
-fallocate -l 2G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
-printf '/swapfile none swap sw 0 0\n' >> /etc/fstab
-printf 'vm.swappiness=10\n' > /etc/sysctl.d/99-swappiness.conf && sysctl --system
-
-# 5) минимум пакетов (docker/gVisor НЕ ставим)
-apt-get update
-apt-get install -y curl ca-certificates openssl git python3 unzip jq
-
-# 6) firewall (если провайдер даёт ufw)
-ufw allow 22/tcp && ufw allow 4601/tcp && ufw allow 80/tcp && ufw allow 443/tcp
+bash new-host-bootstrap.sh --ssh-key "ssh-ed25519 AAAA... deployagent@host" --dry-run
+bash new-host-bootstrap.sh --ssh-key "ssh-ed25519 AAAA... deployagent@host"
 ```
 
-Гигиена доступа (по желанию, но лучше сразу): `PasswordAuthentication no`, вход только по ключу.
-На старом хосте пароль по SSH был разрешён (`PasswordAuthentication` не задан → default yes) —
-на новом лучше закрыть.
+С `--with-postgres` (и паролем через env, чтобы не светить в истории):
 
-Проверка: `id deployagent` → `uid=1001`, `loginctl show-user deployagent | grep Linger` → `yes`,
-`sysctl net.ipv4.ip_unprivileged_port_start` → `80`.
+```bash
+PG_PASSWORD='...' bash new-host-bootstrap.sh \
+  --ssh-key "ssh-ed25519 AAAA... deployagent@host" --with-postgres --pg-db stand --pg-user stand
+```
+
+Что скрипт делает: создаёт `deployagent` (uid/gid 1001, home 750) и кладёт туда публичный ключ;
+включает linger; ставит порог непривилегированных портов 80; добавляет swap 2 ГБ и
+`vm.swappiness=10`; ограничивает journald 300 МБ; ставит `git curl ca-certificates jq openssl
+python3`; при `--with-postgres` — PostgreSQL с тюнингом под 1 vCPU/3 ГБ (`shared_buffers=384MB`,
+`work_mem=8MB`, `max_connections=20`, `MemoryMax=768M`) и, если задан `PG_PASSWORD`, роль и БД
+(локально, без внешнего доступа).
+
+Проверка после скрипта (уже можно под `deployagent`):
+
+```bash
+id deployagent                         # uid=1001
+loginctl show-user deployagent | grep Linger          # Linger=yes
+sysctl net.ipv4.ip_unprivileged_port_start             # 80
+swapon --show                          # /swapfile 2G
+sudo -n true 2>&1                      # должно быть «a password is required» / отказ — sudo НЕТ
+```
+
+### 5.2. Если понадобится root позже
+
+Такие шаги владелец делает сам (или временно возвращает доступ): установка пакетов, обновление
+PostgreSQL, ремонт swap, `reboot` для проверки автозапуска. Развёртывание и эксплуатация стенда
+`:4601` root не требуют.
+
+### 5.3. Как отобрать доступ после развёртывания
+
+* ключ разворачивающего в `/root/.ssh/authorized_keys` не добавлялся — отзывать там нечего;
+* если доступ больше не нужен совсем: удалить строку из `/home/deployagent/.ssh/authorized_keys`;
+* root-доступ остаётся только у владельца (его собственный ключ/консоль провайдера);
+* `sudo` у `deployagent` нет — проверить: `sudo -n true` должен отказать.
 
 ---
 
@@ -620,8 +653,9 @@ systemctl --user is-active opencode-web caddy
 [ ] старый хост: git-проекты — ветки записаны, незакоммиченное закоммичено/запушено
 [ ] старый хост: sandbox-source студенческого стенда попал в архив (students/sandbox-source)
 [ ] новый хост: Ubuntu, 2 vCPU/2 ГБ+, диск 20 ГБ+, публичный IPv4
-[ ] новый хост: deployagent uid 1001, linger, sysctl порт 80, swap (если нужно)
+[ ] новый хост: владелец прогнал new-host-bootstrap.sh (deployagent uid 1001, linger, sysctl порт 80, swap, пакеты)
 [ ] секреты получены у владельца (basic-auth, пароль стенда, ключ шлюза) — не из репозитория
+[ ] после проверки: root-доступ у разворачивающего отсутствует (ключа в /root нет, sudo нет)
 [ ] новый хост: opencode 2.0.32 + конфиги + env (600) + БД (600) + юнит → active
 [ ] новый хост: caddy 2.11.7 + Caddyfile (новый IP) + юнит → active, сертификат выпущен
 [ ] новый хост: projects (архив + 2 git clone), datasets, ~/web, .ssh/.gitconfig
