@@ -1,0 +1,56 @@
+# Allowlist egress-прокси. POSIX-регулярные выражения, по одному на строку,
+# регистрозависимо. Всё, что не подходит ни под одну строку, блокируется
+# (FilterDefaultDeny Yes в tinyproxy.conf).
+#
+# Правило большое: если у студентов «не находится модель» — смотрим лог
+# контейнера opencode-egress, там будет строка с заблокированным доменом.
+# Добавляем домен сюда, перезапускаем egress.
+
+# ── OpenCode: каталог моделей, бесплатные модели ─────────────────────────────
+# Проверено по строкам бинарника, а не по документации:
+#   https://opencode.ai/inference/openai/v1   ← сами модели (apiKey "public")
+#   https://opencode.ai/oauth/...            ← только если решите подключить аккаунт
+(^|\.)opencode\.ai$
+
+# Каталог моделей. ВАЖНО: это НЕ models.dev, как я предполагал раньше.
+# Клиент качает https://models.opencode.ai/api.json и кладёт в
+# ~/.cache/opencode/models.json (232 провайдера). Без этого домена UI
+# покажет пустой список моделей, если кэш в образе устарел.
+(^|\.)models\.opencode\.ai$
+
+# ── Учебные датасеты (то, ради чего стенд) ───────────────────────────────────
+# GitHub-репозиторий prasertcbs/basic-dataset. Нужны все четыре домена:
+# сайт, codeload (скачивание zip/tar), raw-файлы и объекты релизов.
+(^|\.)github\.com$
+(^|\.)codeload\.github\.com$
+(^|\.)raw\.githubusercontent\.com$
+(^|\.)objects\.githubusercontent\.com$
+
+# OpenML и UCI — классические репозитории датасетов.
+(^|\.)openml\.org$
+(^|\.)archive\.ics\.uci\.edu$
+
+# Hugging Face: сайт, API датасетов и CDN, включая бинарные LFS-файлы.
+(^|\.)huggingface\.co$
+(^|\.)datasets-server\.huggingface\.co$
+(^|\.)cdn-lfs\.huggingface\.co$
+(^|\.)cdn-lfs-us-1\.huggingface\.co$
+(^|\.)hf\.co$
+
+# ВАЖНО: CDN для JS-библиотек (cdn.jsdelivr.net, unpkg.com и подобные) здесь
+# НЕТ и добавлять не нужно. Из этого следует правило для агента: графики в HTML
+# должны быть самодостаточными (PNG в base64 или inline SVG), потому что
+# подтянуть plotly/d3 с CDN не получится.
+
+# ── На будущее, если решите подключить свой провайдер ───────────────────────
+# Раскомментируйте нужное. Пока провайдер в policies — эти строки бесполезны.
+# (^|\.)api\.anthropic\.com$
+# (^|\.)api\.openai\.com$
+# (^|\.)openrouter\.ai$
+# (^|\.)generativelanguage\.googleapis\.com$
+
+# ── Если понадобятся сторонние пакеты (обычно НЕ нужно) ─────────────────────
+# Открывать npm/pypi — это уже supply chain и абуз. Не включайте без причины.
+# (^|\.)registry\.npmjs\.org$
+# (^|\.)pypi\.org$
+# (^|\.)files\.pythonhosted\.org$

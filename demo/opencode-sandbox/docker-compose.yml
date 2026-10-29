@@ -1,0 +1,132 @@
+name: opencode-sandbox
+
+# Стенд для студентов-экономистов: браузер -> edge -> одна песочница OpenCode.
+#
+# Защита от «взлома» построена на четырёх слоях, и только последний из них —
+# конфиг OpenCode. Первые три это ОС:
+#   1. сеть      — песочница физически не имеет выхода в интернет,
+#                  только через egress-прокси с allowlist доменов моделей
+#   2. контейнер — gVisor, non-root, read-only rootfs, cap_drop ALL, лимиты
+#   3. конфиг    — permissions/policies в /etc/opencode/opencode.json
+#   4. edge      — TLS/порт, наружу торчит только он
+
+services:
+  # ─── Песочница: сам OpenCode ────────────────────────────────────────────────
+  sandbox:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        OPENCODE_IMAGE: ${OPENCODE_IMAGE:-ghcr.io/anomalyco/opencode:2.0.0}
+        SANDBOX_UID: ${SANDBOX_UID:-1000}
+        SANDBOX_GID: ${SANDBOX_GID:-1000}
+    image: opencode-sandbox:local
+    container_name: opencode-sandbox
+    restart: unless-stopped
+    working_dir: /work
+
+    # gVisor. Если runtime не установлен, поставьте SANDBOX_RUNTIME=runc.
+    runtime: ${SANDBOX_RUNTIME:-runsc}
+
+    # Никаких привилегий, никакого нового root, никаких capabilities.
+    # uid/gid должны совпадать с владельцем workspace/ на хосте.
+    user: "${SANDBOX_UID:-1000}:${SANDBOX_GID:-1000}"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+
+    # Потолок на «шумного» студента: fork-бомбы, бесконечные циклы в shell.
+    pids_limit: ${SANDBOX_PIDS:-512}
+    mem_limit: ${SANDBOX_MEMORY:-6g}
+    cpus: ${SANDBOX_CPUS:-3.5}
+    shm_size: 256m
+    environment:
+      HOME: /home/sandbox
+      XDG_CONFIG_HOME: /home/sandbox/.config
+      XDG_DATA_HOME: /home/sandbox/.local/share
+      XDG_STATE_HOME: /home/sandbox/.local/state
+      XDG_CACHE_HOME: /home/sandbox/.cache
+      # Единственная наружная дверь. NO_PROXY обязателен: клиент и сервер
+      # OpenCode общаются между собой через loopback.
+      HTTP_PROXY: http://egress:8888
+      HTTPS_PROXY: http://egress:8888
+      NO_PROXY: localhost,127.0.0.1,::1,sandbox
+      OPENCODE_SERVER_PASSWORD: ${SANDBOX_PASSWORD:?SANDBOX_PASSWORD is required}
+
+    tmpfs:
+      - /tmp:size=256m,mode=1777
+
+    volumes:
+      # Весь домашний каталог — один том. Так надёжнее, чем перечислять
+      # подпапки: OpenCode пишет ещё и в каталоги, которые могут измениться
+      # от версии к версии, а корневая ФС у нас read-only.
+      - sandbox-home:/home/sandbox
+      # Рабочая папка студентов и датасеты.
+      - ./workspace:/work
+      # Guardrails. read-only: ни агент, ни студент не перепишут правила.
+      - ./config/opencode.json:/etc/opencode/opencode.json:ro
+
+    networks: [sandbox_net]
+    expose:
+      - "4096"
+
+    depends_on: [egress]
+
+  # ─── Единственный выход в интернет: allowlist ──────────────────────────────
+  egress:
+    build:
+      context: ./egress
+      dockerfile: Dockerfile
+    image: opencode-sandbox-egress:local
+    container_name: opencode-egress
+    restart: unless-stopped
+    # Работаем сразу от nobody: с cap_drop: ALL сбросить root-привилегии
+    # внутри процесса уже не получится, да и незачем.
+    user: "65534:65534"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp:size=16m
+    networks:
+      - sandbox_net
+      - egress_out
+
+  # ─── Наружу торчит только он ────────────────────────────────────────────────
+  edge:
+    image: nginx:1.27-alpine
+    container_name: opencode-edge
+    restart: unless-stopped
+    environment:
+      ENABLE_TLS: ${ENABLE_TLS:-false}
+      EDGE_HTTPS_PORT: ${EDGE_HTTPS_PORT:-443}
+    volumes:
+      - ./edge/entrypoint.sh:/docker-entrypoint.d/10-sandbox.sh:ro
+      - ./edge/site.http.conf:/etc/nginx/templates/site.http.conf:ro
+      - ./edge/site.tls.conf:/etc/nginx/templates/site.tls.conf:ro
+      - ${TLS_CERT_DIR:-./edge/certs}:/etc/nginx/certs:ro
+      # Скачивание результатов: тот же каталог, что /work у агента, но только
+      # на чтение. Пароль на этот путь — edge/htpasswd, генерируется при запуске
+      # из того же SANDBOX_PASSWORD (см. scripts/30-up.sh).
+      - ./workspace:/srv/files:ro
+      - ./edge/htpasswd:/etc/nginx/htpasswd:ro
+    ports:
+      - "${EDGE_PORT:-80}:80"
+      - "${EDGE_HTTPS_PORT:-443}:${EDGE_HTTPS_PORT:-443}"
+    networks:
+      - sandbox_net
+      - edge_out
+    depends_on: [sandbox]
+
+networks:
+  # Внутренняя сеть: без маршрута в интернет вообще.
+  sandbox_net:
+    internal: true
+  # Наружная сеть для edge/egress.
+  egress_out: {}
+  edge_out: {}
+
+volumes:
+  sandbox-home:

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Дополнительный блок · 20 вопросов</title>
+<style>
+@page { size: A4; margin: 18mm 16mm; }
+:root {
+  --ink:#191713; --faded:#6b6255; --rule:#191713; --light:#d8d0c0;
+  --red:#b3282d; --paper:#fbf8f1;
+  --mono:ui-monospace,'SF Mono','Cascadia Mono','Roboto Mono',Consolas,'Courier New',monospace;
+  --sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#f5f1e8;color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;padding:24px}
+.sheet{max-width:820px;margin:0 auto;background:var(--paper);border:1px solid var(--rule);padding:34px 38px 40px}
+.kicker{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--red);font-weight:700}
+.variant{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--red);border:1px solid var(--red);display:inline-block;padding:3px 8px;margin:0 0 10px}
+h1{font-family:var(--mono);font-size:34px;line-height:1.05;text-transform:uppercase;letter-spacing:-.02em;margin:4px 0 12px}
+h1 .accent{color:var(--red)}
+.dek{border-left:3px solid var(--rule);padding-left:13px;margin-bottom:14px;font-size:14px;max-width:72ch}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.chip{font-family:var(--mono);font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--faded);border:1px solid var(--light);padding:4px 8px}
+.chip b{color:var(--ink)}
+.instructions{margin:16px 0 4px;padding:12px 14px;border:1px solid var(--rule);background:#fffdf7;font-size:13.5px}
+.instructions b{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.instructions ol{margin:6px 0 0 18px}
+.instructions li{margin-bottom:3px}
+.pq{border-top:1px solid var(--light);padding:13px 0 12px;break-inside:avoid}
+.pq-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.pq-no{font-family:var(--mono);font-size:22px;font-weight:800;color:var(--red);line-height:1}
+.pq-tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faded)}
+.pq h3{font-size:15px;text-transform:uppercase;letter-spacing:.01em;margin:4px 0 5px}
+.pq-prompt{font-size:14px;margin-bottom:8px;max-width:76ch}
+.pq-opts{list-style:none;display:grid;gap:4px}
+.pq-opts li{display:flex;gap:9px;align-items:flex-start;font-size:13.5px;line-height:1.4}
+.ol{font-family:var(--mono);font-size:11px;font-weight:700;border:1px solid var(--rule);min-width:20px;height:20px;display:grid;place-items:center;margin-top:1px}
+.answer{margin-top:8px;font-size:13.5px}
+.answer b{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.sign{display:flex;gap:28px;margin-top:22px;font-size:12px;color:var(--faded);flex-wrap:wrap}
+.sign span{border-bottom:1px solid var(--rule);min-width:180px;padding-bottom:2px}
+.keypage{break-before:page;page-break-before:always;margin-top:0}
+.keypage h2{font-family:var(--mono);font-size:26px;text-transform:uppercase;margin-bottom:6px}
+.keypage p{font-size:13px;color:var(--faded);margin-bottom:12px}
+table.key{border-collapse:collapse;width:100%;font-size:12.5px}
+table.key th{font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;text-align:left;padding:6px 7px;border-bottom:2px solid var(--rule);color:var(--faded)}
+table.key td{padding:5px 7px;border-bottom:1px solid var(--light);vertical-align:top}
+table.key td:nth-child(1){font-family:var(--mono);font-weight:700;width:26px}
+table.key td:nth-child(2){font-family:var(--mono);font-weight:800;color:var(--red);width:28px}
+.dist{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);margin:14px 0 18px}
+.dist div{background:var(--paper);padding:8px 10px}
+.dist .v{font-family:var(--mono);font-size:20px;font-weight:800}
+.dist .l{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--faded)}
+.note{border-left:3px solid #b8860b;background:#f3ecd9;padding:9px 12px;font-size:12.5px;margin-top:14px}
+@media print{
+  body{background:#fff;padding:0}
+  .sheet{border:none;max-width:none;padding:0}
+  .pq{padding:10px 0 9px}
+}
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="kicker">РУДН · визуализация данных с ИИ · проверочная работа</div>
+  <h1>JSON, XML<br><span class="accent">и типы графиков</span></h1>
+  
+  <p class="dek">Дополнительный блок по JSON и XML и выбору типа графика. Все ситуации описаны словами: картинки не нужны, чтобы понять задачу и выбрать форму. Только текстовые вопросы.</p>
+  <div class="meta">
+    <span class="chip"><b>20</b> вопросов</span>
+    <span class="chip"><b>4</b> варианта ответа</span>
+    <span class="chip"><b>30</b> минут</span>
+    <span class="chip"><b>1</b> правильный ответ</span>
+  </div>
+
+  <div class="instructions">
+    <b>Инструкция</b>
+    <ol>
+      <li>В каждом вопросе выберите один правильный ответ и обведите его букву.</li>
+      <li>За правильный ответ — 1 балл, за неправильный — 0. Максимум — 20 баллов.</li>
+      <li>Пользоваться конспектами и ИИ-сервисами нельзя.</li>
+      <li>Если вопрос кажется неоднозначным, выбирайте ответ, наиболее близкий к формулировкам лекции.</li>
+    </ol>
+  </div>
+
+  
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">01</span><span class="pq-tag">JSON · СТРУКТУРА</span></div>
+      <h3>Один заказ и список товаров</h3>
+      <p class="pq-prompt">Нужно описать один заказ: id, дата и список из двух товаров. Какой фрагмент JSON соответствует этой структуре?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>[{&quot;id&quot;: 1042, &quot;date&quot;: &quot;2026-09-29&quot;}, {&quot;товар&quot;: &quot;чай&quot;}, {&quot;товар&quot;: &quot;мёд&quot;}]</span></li>
+<li><span class="ol">B</span><span>{&quot;id&quot;: 1042, &quot;date&quot;: &quot;2026-09-29&quot;, &quot;items&quot;: [{&quot;товар&quot;: &quot;чай&quot;, &quot;qty&quot;: 2}, {&quot;товар&quot;: &quot;мёд&quot;, &quot;qty&quot;: 1}]}</span></li>
+<li><span class="ol">C</span><span>{&quot;id&quot;: 1042, &quot;date&quot;: &quot;2026-09-29&quot;, &quot;items&quot;: &quot;чай, мёд&quot;}</span></li>
+<li><span class="ol">D</span><span>{&quot;id&quot;: 1042, &quot;date&quot;: &quot;2026-09-29&quot;, &quot;items&quot;: {&quot;товар&quot;: &quot;чай&quot;, &quot;товар&quot;: &quot;мёд&quot;}}</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">02</span><span class="pq-tag">JSON · СИНТАКСИС</span></div>
+      <h3>Запятая после последнего поля</h3>
+      <p class="pq-prompt">Студент поправил JSON вручную: после последнего поля осталась запятая. Строгий парсер выдаёт ошибку. Почему?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>JSON разрешает запятые только внутри массивов.</span></li>
+<li><span class="ol">B</span><span>Запятая допустима, если файл сохранён в UTF-8.</span></li>
+<li><span class="ol">C</span><span>Ошибка из-за того, что числа записаны без кавычек.</span></li>
+<li><span class="ol">D</span><span>В строгом JSON после последнего элемента запятая не допускается — это уже невалидный JSON.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">03</span><span class="pq-tag">JSON · ТИПЫ</span></div>
+      <h3>null, ноль и отсутствие поля</h3>
+      <p class="pq-prompt">В API у части заказов discount = null, у части поля discount нет. Студент фильтрует discount &lt; 100 и теряет такие строки. В чём причина?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>null и отсутствие ключа не дают истинного результата при сравнении с числом; их нужно обрабатывать отдельно — например, задать значение по умолчанию.</span></li>
+<li><span class="ol">B</span><span>null и отсутствие поля — одно и то же, фильтр должен работать.</span></li>
+<li><span class="ol">C</span><span>Проблема в кодировке: UTF-8 не поддерживает null.</span></li>
+<li><span class="ol">D</span><span>Нужно заменить null на строку &quot;0&quot;, тогда сравнение точно сработает.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">04</span><span class="pq-tag">JSON · ВАЛИДАЦИЯ</span></div>
+      <h3>Схема проверяет не только наличие</h3>
+      <p class="pq-prompt">JSON Schema требует, чтобы qty было целым числом не меньше 1. В данных встретились qty = &quot;2&quot; (строка) и qty = 0. Что покажет валидация?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Обе записи пройдут: &quot;2&quot; и 0 — числа.</span></li>
+<li><span class="ol">B</span><span>Только &quot;2&quot; пройдёт, потому что 0 — допустимое число.</span></li>
+<li><span class="ol">C</span><span>Обе записи не пройдут: строка вместо целого и значение ниже минимума.</span></li>
+<li><span class="ol">D</span><span>Валидация проверит только наличие поля qty, но не его тип и значение.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">05</span><span class="pq-tag">JSON · КАЧЕСТВО</span></div>
+      <h3>Два одинаковых ключа</h3>
+      <p class="pq-prompt">В JSON дважды указан ключ id: сначала 1007, потом 1008. Чем это опасно?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Это всегда синтаксическая ошибка, и файл не прочитается.</span></li>
+<li><span class="ol">B</span><span>Разные парсеры могут оставить первое или последнее значение; результат зависит от реализации, поэтому дубли ключей недопустимы.</span></li>
+<li><span class="ol">C</span><span>JSON автоматически суммирует значения одинаковых ключей.</span></li>
+<li><span class="ol">D</span><span>Второй ключ автоматически превращается в массив.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">06</span><span class="pq-tag">XML · СТРУКТУРА</span></div>
+      <h3>Сколько корней у XML</h3>
+      <p class="pq-prompt">В XML-файле два корневых элемента: orders и customers. Парсер сообщает об ошибке. Почему?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>XML требует ровно два корневых элемента.</span></li>
+<li><span class="ol">B</span><span>Ошибка из-за отсутствия XSD-схемы.</span></li>
+<li><span class="ol">C</span><span>Нужно переименовать корневые элементы в атрибуты.</span></li>
+<li><span class="ol">D</span><span>У XML должен быть один корневой элемент; orders и customers нужно объединить в общий контейнер.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">07</span><span class="pq-tag">XML · АТРИБУТЫ</span></div>
+      <h3>Атрибут или дочерний элемент</h3>
+      <p class="pq-prompt">В XML заказа id и status записаны как атрибуты, а date, amount и paid — как элементы. При разборе в таблицу что важно учесть?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Атрибуты и элементы — разные места данных: id и status нужно явно извлечь в столбцы, иначе они могут потеряться.</span></li>
+<li><span class="ol">B</span><span>Атрибуты и элементы всегда автоматически попадают в одну колонку.</span></li>
+<li><span class="ol">C</span><span>XML не поддерживает атрибуты, это ошибка.</span></li>
+<li><span class="ol">D</span><span>Атрибуты автоматически становятся отдельными строками таблицы.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">08</span><span class="pq-tag">XML · ДОПУСТИМОСТЬ</span></div>
+      <h3>Амперсанд в названии</h3>
+      <p class="pq-prompt">В XML название компании — Ivan &amp; Sons. Парсер падает на символе &amp;. Что сделать?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Удалить амперсанд из названия.</span></li>
+<li><span class="ol">B</span><span>Закодировать файл в UTF-16.</span></li>
+<li><span class="ol">C</span><span>Экранировать амперсанд символьной сущностью (amp) или обернуть текст в CDATA.</span></li>
+<li><span class="ol">D</span><span>Поставить пробелы вокруг амперсанда.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">09</span><span class="pq-tag">XML · ТАБЛИЦА</span></div>
+      <h3>Четыре товара в одном заказе</h3>
+      <p class="pq-prompt">В одном заказе четыре элемента item, у каждого есть sku и qty. Нужна плоская таблица «одна строка — товар заказа». Сколько строк будет для одного заказа и что произойдёт с полями заказа?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Одна строка; все товары нужно упаковать в одну ячейку.</span></li>
+<li><span class="ol">B</span><span>Четыре строки; поля заказа (id, дата, статус) повторятся в каждой строке.</span></li>
+<li><span class="ol">C</span><span>Четыре столбца; по одному столбцу на товар.</span></li>
+<li><span class="ol">D</span><span>Две строки: одна для заказа, одна для списка товаров.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">10</span><span class="pq-tag">XML · XSD</span></div>
+      <h3>Дата и сумма не той формы</h3>
+      <p class="pq-prompt">XSD требует типы xs:date и xs:decimal. В XML дата записана как 09/10/2026, сумма — как 1,250.50. Валидация не проходит. Почему?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>XSD не поддерживает даты и десятичные числа.</span></li>
+<li><span class="ol">B</span><span>Достаточно указать локаль ru-RU, и валидация пройдёт.</span></li>
+<li><span class="ol">C</span><span>XSD проверяет только структуру, а значения не проверяет.</span></li>
+<li><span class="ol">D</span><span>Нужны форматы, предусмотренные типом: дата ГГГГ-ММ-ДД и десятичная точка без разделителя тысяч; иначе значение не соответствует xs:date и xs:decimal.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">11</span><span class="pq-tag">ГРАФИК · ТАБЛИЦА</span></div>
+      <h3>Точные значения до рубля</h3>
+      <p class="pq-prompt">Финансовому отделу нужно найти точную выручку каждого из пяти филиалов до рубля и передать числа в отчёт. Что уместнее?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Круговая диаграмма с пятью секторами.</span></li>
+<li><span class="ol">B</span><span>Линейный график по филиалам.</span></li>
+<li><span class="ol">C</span><span>Таблица со значениями.</span></li>
+<li><span class="ol">D</span><span>Трёхмерная столбчатая диаграмма.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">12</span><span class="pq-tag">ГРАФИК · НАКОПЛЕНИЕ</span></div>
+      <h3>Итог и состав по годам</h3>
+      <p class="pq-prompt">Нужно показать общую выручку за 2024, 2025 и 2026 годы и одновременно вклад трёх каналов в каждом году. Какой график уместнее?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Столбчатая диаграмма с накоплением: столбец на год, сегменты — каналы.</span></li>
+<li><span class="ol">B</span><span>Круговая диаграмма по годам.</span></li>
+<li><span class="ol">C</span><span>Точечная диаграмма «год — выручка».</span></li>
+<li><span class="ol">D</span><span>Линейный график только общей выручки.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">13</span><span class="pq-tag">ГРАФИК · ДОЛИ</span></div>
+      <h3>Доли меняются, итог растёт</h3>
+      <p class="pq-prompt">Нужно показать, как менялась доля четырёх каналов в выручке за три года, хотя общая выручка тоже росла. Что выбрать, чтобы сравнение долей не искажалось ростом общего итога?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Обычные столбцы с абсолютной выручкой.</span></li>
+<li><span class="ol">B</span><span>Линейный график общей выручки.</span></li>
+<li><span class="ol">C</span><span>Круговую диаграмму за каждый год без подписей.</span></li>
+<li><span class="ol">D</span><span>100% столбчатую диаграмму с накоплением: каждый год — 100%, сегменты — доли каналов.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">14</span><span class="pq-tag">ГРАФИК · ТЕПЛОВАЯ КАРТА</span></div>
+      <h3>День недели и час пик</h3>
+      <p class="pq-prompt">Есть число заказов по дням недели и часам: 7 дней × 12 интервалов. Нужно быстро найти самые загруженные сочетания «день + час». Что выбрать?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>84 отдельных столбца.</span></li>
+<li><span class="ol">B</span><span>Тепловую карту: дни по одной оси, часы по другой, цвет — число заказов.</span></li>
+<li><span class="ol">C</span><span>Круговую диаграмму с 84 секторами.</span></li>
+<li><span class="ol">D</span><span>Линейный график по всем 84 значениям.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">15</span><span class="pq-tag">ГРАФИК · КАРТА</span></div>
+      <h3>Где больше клиентов</h3>
+      <p class="pq-prompt">Нужно показать, в каких регионах России у компании больше клиентов, и ответить на вопрос «где их больше всего». Что выбрать?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Круговую диаграмму регионов.</span></li>
+<li><span class="ol">B</span><span>Линейный график по регионам.</span></li>
+<li><span class="ol">C</span><span>Карту с интенсивностью цвета по числу клиентов.</span></li>
+<li><span class="ol">D</span><span>Гистограмму числа клиентов.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">16</span><span class="pq-tag">ГРАФИК · ДВЕ ОСИ</span></div>
+      <h3>Рубли и проценты на одном полотне</h3>
+      <p class="pq-prompt">На одном графике хотят показать выручку в рублях и конверсию в процентах, каждую со своей осью Y. Почему это рискованно и что сделать?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Две оси создают произвольное впечатление связи; лучше два отдельных графика или индексированные значения с явным пояснением.</span></li>
+<li><span class="ol">B</span><span>Две оси всегда точнее одной, поэтому график можно оставить.</span></li>
+<li><span class="ol">C</span><span>Нужно перевести рубли в проценты и сложить показатели.</span></li>
+<li><span class="ol">D</span><span>Достаточно сделать обе оси одного цвета.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">17</span><span class="pq-tag">ГРАФИК · МНОГО РЯДОВ</span></div>
+      <h3>Двенадцать линий на одном графике</h3>
+      <p class="pq-prompt">На одном линейном графике 12 товарных линий. Читатель не может проследить ни одну из них. Что сделать?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Сделать все линии ярче и добавить 12 оттенков.</span></li>
+<li><span class="ol">B</span><span>Добавить третью ось Y.</span></li>
+<li><span class="ol">C</span><span>Перейти на круговую диаграмму с 12 секторами.</span></li>
+<li><span class="ol">D</span><span>Выделить 2–3 ключевые линии, остальные показать серым, или разложить ряды на малые кратные графики.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">18</span><span class="pq-tag">ГРАФИК · КРУГ</span></div>
+      <h3>Четыре части одного целого</h3>
+      <p class="pq-prompt">Нужно показать, какую долю в общей выручке даёт каждый из четырёх каналов. Каких-либо сравнений между годами нет. Что уместно?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Линейный график по каналам.</span></li>
+<li><span class="ol">B</span><span>Круговая диаграмма с четырьмя секторами.</span></li>
+<li><span class="ol">C</span><span>Точечная диаграмма «канал — выручка».</span></li>
+<li><span class="ol">D</span><span>Гистограмма выручки по каналам.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">19</span><span class="pq-tag">ГРАФИК · РАЗЛИЧИЕ</span></div>
+      <h3>Столбцы или гистограмма</h3>
+      <p class="pq-prompt">Чем столбчатая диаграмма отличается от гистограммы?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Ничем: это два названия одного графика.</span></li>
+<li><span class="ol">B</span><span>Столбчатая — только для времени, гистограмма — только для денег.</span></li>
+<li><span class="ol">C</span><span>Столбчатая сравнивает категории, а гистограмма показывает распределение одной числовой величины по интервалам.</span></li>
+<li><span class="ol">D</span><span>Гистограмма всегда использует круговые сектора.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">20</span><span class="pq-tag">ГРАФИК · ОШИБКА</span></div>
+      <h3>Линия между независимыми каналами</h3>
+      <p class="pq-prompt">Аналитик соединил линией пять каналов продаж, расположенных по алфавиту, и подписал: «динамика каналов». Почему такой график может вводить в заблуждение?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Линия создаёт впечатление последовательности и изменения во времени, хотя каналы — независимые категории; уместнее столбцы.</span></li>
+<li><span class="ol">B</span><span>Линия всегда запрещена для пяти значений.</span></li>
+<li><span class="ol">C</span><span>Каналы нельзя сравнивать между собой.</span></li>
+<li><span class="ol">D</span><span>Нужно просто добавить больше точек на линию.</span></li></ol>
+    </article>
+
+  <div class="sign">
+    <span>Фамилия, имя, группа</span>
+    <span>Дата</span>
+  </div>
+
+  <div class="keypage">
+    <h2>Ключ и распределение</h2>
+    <p>Для преподавателя. Один правильный ответ на вопрос; шкала: 18–20 — «отлично», 15–17 — «хорошо», 10–14 — «удовлетворительно», 0–9 — требуется повторение.</p>
+
+    <div class="dist">
+      <div><div class="v">10</div><div class="l">JSON и XML</div></div>
+      <div><div class="v">10</div><div class="l">Типы графиков</div></div>
+    </div>
+
+    <table class="key">
+      <thead><tr><th>№</th><th>Ответ</th><th>Тема</th><th>Источник</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><b>B</b></td><td>Один заказ и список товаров</td><td>Занятие 5 · JSON: объект и массив</td></tr>
+<tr><td>2</td><td><b>D</b></td><td>Запятая после последнего поля</td><td>ЛР 06 · синтаксис JSON</td></tr>
+<tr><td>3</td><td><b>A</b></td><td>null, ноль и отсутствие поля</td><td>Занятие 5 · JSON: null</td></tr>
+<tr><td>4</td><td><b>C</b></td><td>Схема проверяет не только наличие</td><td>Занятие 5 · JSON Schema и XSD</td></tr>
+<tr><td>5</td><td><b>B</b></td><td>Два одинаковых ключа</td><td>ЛР 06 · качество JSON</td></tr>
+<tr><td>6</td><td><b>D</b></td><td>Сколько корней у XML</td><td>Занятие 5 · структура XML</td></tr>
+<tr><td>7</td><td><b>A</b></td><td>Атрибут или дочерний элемент</td><td>Занятие 5 · XML: атрибуты</td></tr>
+<tr><td>8</td><td><b>C</b></td><td>Амперсанд в названии</td><td>Занятие 5 · XML: допустимость</td></tr>
+<tr><td>9</td><td><b>B</b></td><td>Четыре товара в одном заказе</td><td>ЛР 06 · XML → таблица</td></tr>
+<tr><td>10</td><td><b>D</b></td><td>Дата и сумма не той формы</td><td>Занятие 5 · XSD: date и decimal</td></tr>
+<tr><td>11</td><td><b>C</b></td><td>Точные значения до рубля</td><td>Занятие 2 · таблица или график</td></tr>
+<tr><td>12</td><td><b>A</b></td><td>Итог и состав по годам</td><td>Занятие 2 · структура и сравнение</td></tr>
+<tr><td>13</td><td><b>D</b></td><td>Доли меняются, итог растёт</td><td>Занятие 2 · структура</td></tr>
+<tr><td>14</td><td><b>B</b></td><td>День недели и час пик</td><td>Занятие 2 · тепловая карта</td></tr>
+<tr><td>15</td><td><b>C</b></td><td>Где больше клиентов</td><td>Занятие 2 · карта</td></tr>
+<tr><td>16</td><td><b>A</b></td><td>Рубли и проценты на одном полотне</td><td>Занятие 2 · выбор формы</td></tr>
+<tr><td>17</td><td><b>D</b></td><td>Двенадцать линий на одном графике</td><td>Занятие 2 · линейная диаграмма</td></tr>
+<tr><td>18</td><td><b>B</b></td><td>Четыре части одного целого</td><td>Занятие 2 · круговая диаграмма</td></tr>
+<tr><td>19</td><td><b>C</b></td><td>Столбцы или гистограмма</td><td>Занятие 2 · гистограмма</td></tr>
+<tr><td>20</td><td><b>A</b></td><td>Линия между независимыми каналами</td><td>Занятие 2 · линейная диаграмма</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note">
+      Разбор каждого ответа с правилом и ссылкой на слайд есть в интерактивной версии теста
+      (<code>json_xml_graphs_quiz_20.html</code>). Она открывается в браузере без интернета и показывает результат сразу после ответа.
+    </div>
+  </div>
+</div>
+</body>
+</html>

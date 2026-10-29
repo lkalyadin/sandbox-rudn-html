@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Загрузка визуализаций — OpenCode Sandbox</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 2rem auto; padding: 0 1rem; }
+    .drop-zone { border: 2px dashed #ccc; border-radius: 8px; padding: 3rem; text-align: center; transition: border-color .2s; }
+    .drop-zone.drag { border-color: #0066cc; background: #f0f7ff; }
+    .drop-zone input { display: none; }
+    .btn { display: inline-block; padding: .75rem 1.5rem; background: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; }
+    .btn:disabled { background: #99bbdd; cursor: not-allowed; }
+    .progress { display: none; margin-top: 1rem; }
+    .progress-bar { height: 8px; background: #eee; border-radius: 4px; overflow: hidden; }
+    .progress-bar div { height: 100%; background: #0066cc; width: 0%; transition: width .3s; }
+    .result { margin-top: 1.5rem; display: none; }
+    .result a { display: inline-block; padding: .5rem 1rem; background: #28a745; color: white; text-decoration: none; border-radius: 4px; }
+    .error { color: #dc3545; margin-top: 1rem; }
+    .info { font-size: .9rem; color: #666; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>📤 Загрузка HTML-визуализации</h1>
+  <p>Перетащите сюда файл <code>.html</code> или <code>.htm</code> с готовой визуализацией.</p>
+  <p class="info">⚠️ Файл будет доступен по ссылке <strong>24 часа</strong>. Ночью (03:30) папка очищается полностью.</p>
+
+  <div class="drop-zone" id="dropZone">
+    <input type="file" id="fileInput" accept=".html,.htm">
+    <p>Перетащите файл сюда или <button type="button" class="btn" onclick="document.getElementById('fileInput').click()">выберите файл</button></p>
+    <p class="info">Максимальный размер: 50 МБ</p>
+  </div>
+
+  <div class="progress" id="progress">
+    <div class="progress-bar"><div id="progressFill"></div></div>
+    <p id="progressText">Загрузка...</p>
+  </div>
+
+  <div class="result" id="result"></div>
+  <div class="error" id="error"></div>
+
+  <script>
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const progress = document.getElementById('progress');
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
+    const result = document.getElementById('result');
+    const error = document.getElementById('error');
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => {
+      dropZone.addEventListener(evt, e => { e.preventDefault(); e.stopPropagation(); });
+    });
+    ['dragenter', 'dragover'].forEach(evt => dropZone.addEventListener(evt, () => dropZone.classList.add('drag')));
+    ['dragleave', 'drop'].forEach(evt => dropZone.addEventListener(evt, () => dropZone.classList.remove('drag')));
+
+    dropZone.addEventListener('drop', e => {
+      const file = e.dataTransfer.files[0];
+      if (file) uploadFile(file);
+    });
+    fileInput.addEventListener('change', e => {
+      if (e.target.files[0]) uploadFile(e.target.files[0]);
+    });
+
+    async function uploadFile(file) {
+      if (!file.name.toLowerCase().match(/\.(html|htm)$/)) {
+        error.textContent = '❌ Только файлы .html или .htm';
+        return;
+      }
+      if (file.size > 50 * 1024 * 1024) {
+        error.textContent = '❌ Файл слишком большой (макс. 50 МБ)';
+        return;
+      }
+
+      error.textContent = '';
+      result.style.display = 'none';
+      progress.style.display = 'block';
+      progressFill.style.width = '0%';
+      progressText.textContent = 'Загрузка...';
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const xhr = new XMLHttpRequest();
+        xhr.upload.addEventListener('progress', e => {
+          if (e.lengthComputable) {
+            const pct = Math.round((e.loaded / e.total) * 100);
+            progressFill.style.width = pct + '%';
+            progressText.textContent = `Загрузка: ${pct}%`;
+          }
+        });
+        xhr.addEventListener('load', () => {
+          progress.style.display = 'none';
+          if (xhr.status === 200) {
+            const data = JSON.parse(xhr.responseText);
+            result.innerHTML = `
+              <p>✅ Файл загружен!</p>
+              <a href="${data.url}" target="_blank">${data.url}</a>
+              <p class="info">Ссылка действительна 24 часа. Поделитесь ею с преподавателем или одногруппниками.</p>
+            `;
+            result.style.display = 'block';
+          } else {
+            const data = JSON.parse(xhr.responseText || '{}');
+            error.textContent = '❌ ' + (data.error || `Ошибка ${xhr.status}`);
+          }
+        });
+        xhr.addEventListener('error', () => {
+          progress.style.display = 'none';
+          error.textContent = '❌ Ошибка сети';
+        });
+        xhr.open('POST', '/upload/');
+        xhr.setRequestHeader('Authorization', 'Basic ' + btoa('opencode:' + prompt('Введите пароль:')));
+        xhr.send(formData);
+      } catch (e) {
+        progress.style.display = 'none';
+        error.textContent = '❌ ' + e.message;
+      }
+    }
+  </script>
+</body>
+</html>

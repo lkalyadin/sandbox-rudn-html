@@ -1,0 +1,153 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "update": "disable",
+  "model": "opencode/deepseek-v4.1-flash-free",
+  "share": "disabled",
+
+  // ─── ВРЕМЕННО (до 2026-10-22): провайдер Vercel AI Gateway ─────────────────
+  // Каталоговый провайдер `vercel` содержит 315 моделей, и почти все платные
+  // (цена > 0) — студент выбрал бы платную модель и съел общий баланс.
+  // Ограничить каталог нельзя: whitelist/blacklist в provider.* на каталоговые
+  // модели не действуют (проверено), provider.use фильтрует по провайдеру.
+  //
+  // Поэтому заводим СВОЙ провайдер `vercel-free` с явным списком моделей:
+  // в UI студент видит ровно эти три, и все они бесплатны (цена 0 в шлюзе).
+  // Каталоговый `vercel` при этом скрыт политикой provider.use (см. policies).
+  //
+  // baseURL указывает на ЛОКАЛЬНЫЙ прокси (контейнер gateway), а не на шлюз:
+  // настоящий ключ в песочнице не лежит. Иначе агент достаёт его из
+  // /proc/self/environ и уходит в шлюз любой платной моделью через urllib
+  // (curl/wget запрещены политикой, urllib — нет), минуя и список моделей,
+  // и лимит. Прокси отвечает только за модели из своего белого списка.
+  //
+  // apiKey здесь — заглушка: прокси подставляет настоящий ключ сам.
+  // Откат: удалить блок "provider" → "vercel-free" и строку provider.use
+  // "vercel-free" в policies, вернуть model = opencode/*-free.
+  "provider": {
+    // ── ПРОВАЙДЕР go-cheap (OpenCode Go, подписка) — УДАЛЁН 2026-10-27 ────────
+    // По решению преподавателя стенд работает только на бесплатных моделях:
+    // провайдер подписки убран (вместе с ключом в apiKey и OPENCODE_GO_API_KEY
+    // в .env). Причина: ключ подписки лежал в песочнице, и агент студента мог
+    // достать его одной командой (`opencode auth export`, SQLite-БД, environ).
+    //
+    // Если подписка понадобится снова: вернуть блок "go-cheap" с baseURL
+    // https://opencode.ai/inference/go/openai/v1 и ключом, добавить в policies
+    // provider.use "go-cheap" = allow и выбрать модель go-cheap/*.
+    // Ключ, который был на стенде, считается скомпрометированным — перед
+    // повторным использованием сменить его у провайдера.
+    "vercel-free": {
+      "npm": "@opencode/ai/providers/vercel-ai-gateway",
+      "options": {
+        "baseURL": "http://gateway:8080/v1",
+        "apiKey": "local-proxy"
+      },
+      "models": {
+        "zai/glm-5.3-flash": {
+          "name": "GLM 5.3 Flash (шлюз, резерв — платная)"
+        },
+        "reflection/beam-free": {
+          "name": "Beam Free (шлюз, бесплатно)"
+        },
+        "nvidia/nemotron-3.5-lightning-free": {
+          "name": "Nemotron Lightning (шлюз, бесплатно)"
+        }
+      }
+    }
+  },
+
+  "tool_output": {
+    "max_lines": 400,
+    "max_bytes": 32768
+  },
+  "media": {
+    "image": {
+      "auto_resize": true,
+      "max_width": 1600,
+      "max_height": 1600,
+      "max_base64_bytes": 2097152
+    }
+  },
+  "permissions": [
+    { "action": "external_directory", "resource": "*", "effect": "deny" },
+    { "action": "webfetch",  "resource": "*", "effect": "deny" },
+    { "action": "websearch", "resource": "*", "effect": "deny" },
+    { "action": "shell", "resource": "*", "effect": "ask" },
+    { "action": "shell", "resource": "python3 *", "effect": "allow" },
+    { "action": "shell", "resource": "python *",  "effect": "allow" },
+    { "action": "shell", "resource": "uv *",      "effect": "allow" },
+    { "action": "shell", "resource": "ls *",      "effect": "allow" },
+    { "action": "shell", "resource": "cat *",     "effect": "allow" },
+    { "action": "shell", "resource": "head *",    "effect": "allow" },
+    { "action": "shell", "resource": "tail *",    "effect": "allow" },
+    { "action": "shell", "resource": "wc *",      "effect": "allow" },
+    { "action": "shell", "resource": "grep *",    "effect": "allow" },
+    { "action": "shell", "resource": "find *",    "effect": "allow" },
+    { "action": "shell", "resource": "sort *",    "effect": "allow" },
+    { "action": "shell", "resource": "uniq *",    "effect": "allow" },
+    { "action": "shell", "resource": "cut *",     "effect": "allow" },
+    { "action": "shell", "resource": "sed *",     "effect": "allow" },
+    { "action": "shell", "resource": "awk *",     "effect": "allow" },
+    { "action": "shell", "resource": "mkdir *",   "effect": "allow" },
+    { "action": "shell", "resource": "cp *",      "effect": "allow" },
+    { "action": "shell", "resource": "mv *",      "effect": "allow" },
+    { "action": "shell", "resource": "touch *",   "effect": "allow" },
+    { "action": "shell", "resource": "echo *",    "effect": "allow" },
+    { "action": "shell", "resource": "git status *", "effect": "allow" },
+    { "action": "shell", "resource": "git diff *",   "effect": "allow" },
+    { "action": "shell", "resource": "git log *",    "effect": "allow" },
+    { "action": "shell", "resource": "rm *", "effect": "ask" },
+    { "action": "read", "resource": "**/.env",     "effect": "deny" },
+    { "action": "read", "resource": "**/.env.*",   "effect": "deny" },
+    { "action": "read", "resource": "**/.ssh/**",  "effect": "deny" },
+    { "action": "read", "resource": "**/.aws/**",  "effect": "deny" },
+    { "action": "read", "resource": "**/.config/opencode/**", "effect": "deny" },
+    { "action": "read", "resource": "**/opencode.db",          "effect": "deny" },
+    { "action": "read", "resource": "/etc/**",     "effect": "deny" },
+    { "action": "edit", "resource": "/etc/**",     "effect": "deny" },
+    { "action": "edit", "resource": "**/.config/opencode/**", "effect": "deny" }
+  ],
+  "policies": [
+    { "action": "provider.use", "resource": "*",           "effect": "deny"  },
+    { "action": "provider.use", "resource": "opencode",    "effect": "allow" },
+    // ВРЕМЕННО (до 2026-10-22): разрешён провайдер `vercel-free` — бесплатный
+    // лимит провайдера `opencode` исчерпан (он общий на всех студентов).
+    // Это НЕ каталоговый `vercel` (у него 315 моделей, включая платные), а
+    // свой провайдер с явным списком трёх бесплатных моделей (см. provider
+    // ниже). Откат: удалить эту строку и блок "provider" → "vercel-free",
+    // затем docker compose restart sandbox.
+    { "action": "provider.use", "resource": "vercel-free", "effect": "allow" },
+    { "action": "tool.use", "resource": "webfetch:*",  "effect": "deny" },
+    { "action": "tool.use", "resource": "websearch:*", "effect": "deny" },
+    { "action": "tool.use", "resource": "external_directory:*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:sudo *",      "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:su *",        "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:ssh *",       "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:scp *",       "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:sftp *",      "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:curl *",      "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:wget *",      "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:nc *",        "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:ncat *",      "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:telnet *",    "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:nmap *",      "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:mount *",     "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:umount *",    "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:docker *",    "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:systemctl *", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:pip install *", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:apt *",       "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:git push *",   "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:git remote *", "effect": "deny" }
+  ],
+  "skills": [],
+  "instructions": [
+    "/etc/opencode/skills/economist-sandbox/SKILL.md"
+  ],
+  "default_agent": "economist",
+  "agents": {
+    "economist": {
+      "mode": "primary",
+      "model": "opencode/deepseek-v4.1-flash-free"
+    }
+  }
+}

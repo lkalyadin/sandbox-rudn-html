@@ -1,0 +1,704 @@
+country,country_code,year,gini_index
+Albania,ALB,2015,32.8
+Albania,ALB,2016,33.7
+Albania,ALB,2017,33.1
+Albania,ALB,2018,30.1
+Albania,ALB,2019,30.1
+Albania,ALB,2020,29.4
+Angola,AGO,2018,51.3
+Argentina,ARG,2016,42.3
+Argentina,ARG,2017,41.4
+Argentina,ARG,2018,41.7
+Argentina,ARG,2019,43.3
+Argentina,ARG,2020,42.7
+Argentina,ARG,2021,42.4
+Argentina,ARG,2022,40.7
+Argentina,ARG,2023,42.4
+Armenia,ARM,2015,32.4
+Armenia,ARM,2016,32.5
+Armenia,ARM,2017,33.6
+Armenia,ARM,2018,34.4
+Armenia,ARM,2019,30.0
+Armenia,ARM,2020,25.1
+Armenia,ARM,2021,27.9
+Armenia,ARM,2022,27.9
+Armenia,ARM,2023,27.2
+Australia,AUS,2016,33.7
+Australia,AUS,2018,34.3
+Australia,AUS,2020,33.8
+Austria,AUT,2015,30.5
+Austria,AUT,2016,30.8
+Austria,AUT,2017,29.7
+Austria,AUT,2018,30.8
+Austria,AUT,2019,30.2
+Austria,AUT,2020,29.8
+Austria,AUT,2021,30.7
+Austria,AUT,2022,30.9
+Austria,AUT,2023,31.2
+Bangladesh,BGD,2016,32.4
+Bangladesh,BGD,2022,30.9
+Barbados,BRB,2016,34.1
+Belarus,BLR,2015,25.6
+Belarus,BLR,2016,25.3
+Belarus,BLR,2017,25.4
+Belarus,BLR,2018,25.2
+Belarus,BLR,2019,25.3
+Belarus,BLR,2020,24.4
+Belgium,BEL,2015,27.7
+Belgium,BEL,2016,27.6
+Belgium,BEL,2017,27.4
+Belgium,BEL,2018,27.2
+Belgium,BEL,2019,27.2
+Belgium,BEL,2020,26.0
+Belgium,BEL,2021,26.6
+Belgium,BEL,2022,26.4
+Belgium,BEL,2023,26.8
+Belize,BLZ,2018,39.9
+Benin,BEN,2015,47.6
+Benin,BEN,2018,37.9
+Benin,BEN,2021,34.4
+Bhutan,BTN,2017,37.4
+Bhutan,BTN,2022,28.5
+Bolivia,BOL,2015,46.7
+Bolivia,BOL,2016,45.2
+Bolivia,BOL,2017,44.6
+Bolivia,BOL,2018,42.6
+Bolivia,BOL,2019,41.6
+Bolivia,BOL,2020,43.6
+Bolivia,BOL,2021,40.9
+Bolivia,BOL,2022,41.2
+Bolivia,BOL,2023,42.1
+Bosnia and Herzegovina,BIH,2015,32.9
+Bosnia and Herzegovina,BIH,2021,30.3
+Botswana,BWA,2015,54.9
+Brazil,BRA,2015,51.9
+Brazil,BRA,2016,53.4
+Brazil,BRA,2017,53.3
+Brazil,BRA,2018,53.9
+Brazil,BRA,2019,53.5
+Brazil,BRA,2020,48.8
+Brazil,BRA,2021,52.9
+Brazil,BRA,2022,51.9
+Brazil,BRA,2023,51.5
+Bulgaria,BGR,2015,38.6
+Bulgaria,BGR,2016,40.6
+Bulgaria,BGR,2017,40.4
+Bulgaria,BGR,2018,41.3
+Bulgaria,BGR,2019,40.3
+Bulgaria,BGR,2020,40.5
+Bulgaria,BGR,2021,39.0
+Bulgaria,BGR,2022,38.2
+Bulgaria,BGR,2023,39.5
+Burkina Faso,BFA,2018,43.0
+Burkina Faso,BFA,2021,37.4
+Burundi,BDI,2020,37.5
+Cabo Verde,CPV,2015,42.4
+Cameroon,CMR,2021,42.2
+Canada,CAN,2015,33.7
+Canada,CAN,2016,32.7
+Canada,CAN,2017,33.3
+Canada,CAN,2018,32.5
+Canada,CAN,2019,31.8
+Canada,CAN,2020,29.9
+Canada,CAN,2021,31.1
+Canada,CAN,2022,31.5
+Central African Republic,CAF,2021,43.0
+Chad,TCD,2018,37.5
+Chad,TCD,2022,37.4
+Chile,CHL,2015,45.3
+Chile,CHL,2017,45.3
+Chile,CHL,2020,47.0
+Chile,CHL,2022,43.2
+China,CHN,2015,38.6
+China,CHN,2016,38.5
+China,CHN,2017,39.0
+China,CHN,2018,38.5
+China,CHN,2019,38.2
+China,CHN,2020,37.1
+China,CHN,2021,35.8
+China,CHN,2022,36.0
+Colombia,COL,2015,52.0
+Colombia,COL,2016,51.7
+Colombia,COL,2017,50.9
+Colombia,COL,2018,51.6
+Colombia,COL,2019,52.5
+Colombia,COL,2020,54.4
+Colombia,COL,2021,55.1
+Colombia,COL,2022,54.8
+Colombia,COL,2023,54.6
+Comoros,COM,2020,34.2
+"Congo, Dem. Rep.",COD,2020,44.7
+Costa Rica,CRI,2015,48.4
+Costa Rica,CRI,2016,48.7
+Costa Rica,CRI,2017,48.3
+Costa Rica,CRI,2018,48.0
+Costa Rica,CRI,2019,48.2
+Costa Rica,CRI,2020,49.2
+Costa Rica,CRI,2021,48.7
+Costa Rica,CRI,2022,47.2
+Costa Rica,CRI,2023,46.7
+Cote d'Ivoire,CIV,2015,41.5
+Cote d'Ivoire,CIV,2018,37.2
+Cote d'Ivoire,CIV,2021,35.3
+Croatia,HRV,2015,31.1
+Croatia,HRV,2016,30.9
+Croatia,HRV,2017,30.4
+Croatia,HRV,2018,29.7
+Croatia,HRV,2019,28.9
+Croatia,HRV,2020,29.5
+Croatia,HRV,2021,28.9
+Croatia,HRV,2022,30.0
+Croatia,HRV,2023,30.1
+Cyprus,CYP,2015,34.0
+Cyprus,CYP,2016,32.9
+Cyprus,CYP,2017,31.4
+Cyprus,CYP,2018,32.7
+Cyprus,CYP,2019,31.2
+Cyprus,CYP,2020,31.7
+Cyprus,CYP,2021,31.3
+Cyprus,CYP,2022,31.5
+Cyprus,CYP,2023,31.8
+Czechia,CZE,2015,25.9
+Czechia,CZE,2016,25.4
+Czechia,CZE,2017,24.9
+Czechia,CZE,2018,25.0
+Czechia,CZE,2019,25.3
+Czechia,CZE,2020,26.2
+Czechia,CZE,2021,26.2
+Czechia,CZE,2022,25.9
+Czechia,CZE,2023,25.7
+Denmark,DNK,2015,28.2
+Denmark,DNK,2016,28.2
+Denmark,DNK,2017,28.7
+Denmark,DNK,2018,28.2
+Denmark,DNK,2019,27.7
+Denmark,DNK,2020,27.5
+Denmark,DNK,2021,28.3
+Denmark,DNK,2022,29.3
+Denmark,DNK,2023,29.9
+Djibouti,DJI,2017,41.6
+Dominican Republic,DOM,2015,45.2
+Dominican Republic,DOM,2016,45.7
+Dominican Republic,DOM,2017,42.2
+Dominican Republic,DOM,2018,43.7
+Dominican Republic,DOM,2019,41.9
+Dominican Republic,DOM,2020,39.6
+Dominican Republic,DOM,2021,38.5
+Dominican Republic,DOM,2022,37.0
+Dominican Republic,DOM,2023,38.4
+Ecuador,ECU,2015,46.0
+Ecuador,ECU,2016,45.0
+Ecuador,ECU,2017,44.7
+Ecuador,ECU,2018,45.4
+Ecuador,ECU,2019,45.7
+Ecuador,ECU,2020,47.3
+Ecuador,ECU,2021,45.8
+Ecuador,ECU,2022,45.5
+Ecuador,ECU,2023,44.6
+"Egypt, Arab Rep.",EGY,2015,31.8
+"Egypt, Arab Rep.",EGY,2017,31.5
+"Egypt, Arab Rep.",EGY,2019,31.9
+"Egypt, Arab Rep.",EGY,2021,28.5
+El Salvador,SLV,2015,40.6
+El Salvador,SLV,2016,40.0
+El Salvador,SLV,2017,38.0
+El Salvador,SLV,2018,38.6
+El Salvador,SLV,2019,38.8
+El Salvador,SLV,2021,39.0
+El Salvador,SLV,2022,38.8
+El Salvador,SLV,2023,39.8
+Equatorial Guinea,GNQ,2022,38.5
+Estonia,EST,2015,32.7
+Estonia,EST,2016,31.2
+Estonia,EST,2017,30.4
+Estonia,EST,2018,30.3
+Estonia,EST,2019,30.8
+Estonia,EST,2020,30.7
+Estonia,EST,2021,31.8
+Estonia,EST,2022,32.3
+Estonia,EST,2023,30.7
+Eswatini,SWZ,2016,54.6
+Ethiopia,ETH,2015,35.0
+Ethiopia,ETH,2021,31.1
+Fiji,FJI,2019,30.7
+Finland,FIN,2015,27.1
+Finland,FIN,2016,27.1
+Finland,FIN,2017,27.4
+Finland,FIN,2018,27.3
+Finland,FIN,2019,27.7
+Finland,FIN,2020,27.1
+Finland,FIN,2021,27.7
+Finland,FIN,2022,27.9
+Finland,FIN,2023,27.4
+France,FRA,2015,32.7
+France,FRA,2016,31.9
+France,FRA,2017,31.6
+France,FRA,2018,32.4
+France,FRA,2019,31.2
+France,FRA,2020,30.7
+France,FRA,2021,31.5
+France,FRA,2022,31.2
+France,FRA,2023,31.8
+Gabon,GAB,2017,38.0
+"Gambia, The",GMB,2015,35.9
+"Gambia, The",GMB,2020,38.8
+Georgia,GEO,2015,36.5
+Georgia,GEO,2016,36.6
+Georgia,GEO,2017,37.9
+Georgia,GEO,2018,36.4
+Georgia,GEO,2019,35.9
+Georgia,GEO,2020,34.5
+Georgia,GEO,2021,34.2
+Georgia,GEO,2022,33.5
+Georgia,GEO,2023,34.8
+Germany,DEU,2015,31.4
+Germany,DEU,2016,31.3
+Germany,DEU,2017,31.3
+Germany,DEU,2018,31.9
+Germany,DEU,2019,32.2
+Germany,DEU,2020,32.5
+Germany,DEU,2021,33.6
+Germany,DEU,2022,33.7
+Ghana,GHA,2016,43.5
+Greece,GRC,2015,36.0
+Greece,GRC,2016,35.0
+Greece,GRC,2017,34.4
+Greece,GRC,2018,32.9
+Greece,GRC,2019,33.1
+Greece,GRC,2020,33.6
+Greece,GRC,2021,32.9
+Greece,GRC,2022,33.4
+Greece,GRC,2023,33.4
+Grenada,GRD,2018,43.8
+Guatemala,GTM,2023,45.2
+Guinea,GIN,2018,29.6
+Guinea-Bissau,GNB,2018,34.8
+Guinea-Bissau,GNB,2021,33.4
+Honduras,HND,2015,49.2
+Honduras,HND,2016,49.8
+Honduras,HND,2017,49.4
+Honduras,HND,2018,48.9
+Honduras,HND,2019,48.2
+Honduras,HND,2023,46.8
+Hungary,HUN,2015,30.4
+Hungary,HUN,2016,30.3
+Hungary,HUN,2017,30.6
+Iceland,ISL,2015,26.8
+Iceland,ISL,2016,27.2
+Iceland,ISL,2017,26.1
+Iceland,ISL,2018,26.6
+Iceland,ISL,2019,26.8
+India,IND,2022,25.5
+India,IND,2023,23.0
+Indonesia,IDN,2015,38.2
+Indonesia,IDN,2016,36.9
+Indonesia,IDN,2017,36.4
+Indonesia,IDN,2018,36.3
+Indonesia,IDN,2019,35.4
+Indonesia,IDN,2020,35.3
+Indonesia,IDN,2021,35.5
+Indonesia,IDN,2022,35.5
+Indonesia,IDN,2023,36.1
+"Iran, Islamic Rep.",IRN,2015,35.3
+"Iran, Islamic Rep.",IRN,2016,35.9
+"Iran, Islamic Rep.",IRN,2017,36.7
+"Iran, Islamic Rep.",IRN,2018,37.4
+"Iran, Islamic Rep.",IRN,2019,36.5
+"Iran, Islamic Rep.",IRN,2020,35.8
+"Iran, Islamic Rep.",IRN,2021,35.5
+"Iran, Islamic Rep.",IRN,2022,34.8
+"Iran, Islamic Rep.",IRN,2023,35.9
+Iraq,IRQ,2023,29.8
+Ireland,IRL,2015,31.8
+Ireland,IRL,2016,32.8
+Ireland,IRL,2017,31.4
+Ireland,IRL,2018,30.6
+Ireland,IRL,2019,30.3
+Ireland,IRL,2020,29.2
+Ireland,IRL,2021,29.4
+Ireland,IRL,2022,29.9
+Ireland,IRL,2023,29.0
+Israel,ISR,2015,39.7
+Israel,ISR,2016,39.0
+Israel,ISR,2017,38.2
+Israel,ISR,2018,38.6
+Israel,ISR,2019,38.3
+Israel,ISR,2020,37.8
+Israel,ISR,2021,37.9
+Israel,ISR,2022,38.3
+Italy,ITA,2015,35.4
+Italy,ITA,2016,35.2
+Italy,ITA,2017,35.9
+Italy,ITA,2018,35.2
+Italy,ITA,2019,34.6
+Italy,ITA,2020,35.2
+Italy,ITA,2021,34.8
+Italy,ITA,2022,33.7
+Italy,ITA,2023,34.3
+Jamaica,JAM,2018,35.3
+Jamaica,JAM,2021,39.9
+Japan,JPN,2015,30.7
+Japan,JPN,2016,31.8
+Japan,JPN,2017,31.8
+Japan,JPN,2018,32.9
+Japan,JPN,2019,33.0
+Japan,JPN,2020,32.3
+Kazakhstan,KAZ,2015,26.8
+Kazakhstan,KAZ,2016,27.2
+Kazakhstan,KAZ,2017,27.5
+Kazakhstan,KAZ,2018,27.8
+Kazakhstan,KAZ,2019,28.0
+Kazakhstan,KAZ,2020,28.7
+Kazakhstan,KAZ,2021,29.2
+Kenya,KEN,2015,40.8
+Kenya,KEN,2020,36.2
+Kenya,KEN,2021,38.7
+Kenya,KEN,2022,38.5
+Kiribati,KIR,2019,27.8
+Kiribati,KIR,2023,24.7
+"Korea, Rep.",KOR,2016,35.2
+"Korea, Rep.",KOR,2017,34.9
+"Korea, Rep.",KOR,2018,33.7
+"Korea, Rep.",KOR,2019,33.2
+"Korea, Rep.",KOR,2020,32.7
+"Korea, Rep.",KOR,2021,32.9
+Kosovo,XKX,2015,26.5
+Kosovo,XKX,2016,26.7
+Kosovo,XKX,2017,44.2
+Kosovo,XKX,2018,44.6
+Kosovo,XKX,2019,40.2
+Kosovo,XKX,2020,57.4
+Kosovo,XKX,2021,49.4
+Kosovo,XKX,2022,38.3
+Kyrgyz Republic,KGZ,2015,29.0
+Kyrgyz Republic,KGZ,2016,26.8
+Kyrgyz Republic,KGZ,2017,27.3
+Kyrgyz Republic,KGZ,2018,27.7
+Kyrgyz Republic,KGZ,2019,29.7
+Kyrgyz Republic,KGZ,2020,29.0
+Kyrgyz Republic,KGZ,2021,28.8
+Kyrgyz Republic,KGZ,2022,26.4
+Kyrgyz Republic,KGZ,2023,27.2
+Lao PDR,LAO,2018,38.8
+Latvia,LVA,2015,34.2
+Latvia,LVA,2016,34.3
+Latvia,LVA,2017,35.6
+Latvia,LVA,2018,35.1
+Latvia,LVA,2019,34.5
+Latvia,LVA,2020,35.7
+Latvia,LVA,2021,34.3
+Latvia,LVA,2022,33.7
+Latvia,LVA,2023,34.0
+Lebanon,LBN,2022,35.5
+Lesotho,LSO,2017,44.9
+Liberia,LBR,2016,35.3
+Lithuania,LTU,2015,37.4
+Lithuania,LTU,2016,38.4
+Lithuania,LTU,2017,37.3
+Lithuania,LTU,2018,35.7
+Lithuania,LTU,2019,35.3
+Lithuania,LTU,2020,36.0
+Lithuania,LTU,2021,36.7
+Lithuania,LTU,2022,36.6
+Lithuania,LTU,2023,36.0
+Luxembourg,LUX,2015,32.9
+Luxembourg,LUX,2016,31.7
+Luxembourg,LUX,2017,34.5
+Luxembourg,LUX,2018,35.4
+Luxembourg,LUX,2019,34.2
+Luxembourg,LUX,2020,33.4
+Luxembourg,LUX,2021,32.7
+Luxembourg,LUX,2022,34.1
+Luxembourg,LUX,2023,33.6
+Madagascar,MDG,2021,36.8
+Malawi,MWI,2016,44.7
+Malawi,MWI,2019,38.5
+Malaysia,MYS,2015,41.1
+Malaysia,MYS,2018,41.2
+Malaysia,MYS,2021,40.7
+Maldives,MDV,2016,31.3
+Maldives,MDV,2019,29.3
+Mali,MLI,2018,36.0
+Mali,MLI,2021,35.7
+Malta,MLT,2015,29.4
+Malta,MLT,2016,29.1
+Malta,MLT,2017,29.2
+Malta,MLT,2018,28.7
+Malta,MLT,2019,31.0
+Malta,MLT,2020,31.4
+Malta,MLT,2021,31.6
+Malta,MLT,2022,34.6
+Malta,MLT,2023,31.8
+Marshall Islands,MHL,2019,35.5
+Mauritania,MRT,2019,32.0
+Mauritius,MUS,2017,36.8
+Mexico,MEX,2016,46.9
+Mexico,MEX,2018,46.0
+Mexico,MEX,2020,44.6
+Mexico,MEX,2022,43.5
+Moldova,MDA,2015,27.0
+Moldova,MDA,2016,26.3
+Moldova,MDA,2017,25.9
+Moldova,MDA,2018,25.7
+Moldova,MDA,2019,26.0
+Moldova,MDA,2020,25.0
+Moldova,MDA,2021,25.7
+Moldova,MDA,2022,25.9
+Moldova,MDA,2023,26.8
+Mongolia,MNG,2016,32.3
+Mongolia,MNG,2018,32.7
+Mongolia,MNG,2022,31.4
+Montenegro,MNE,2015,39.0
+Montenegro,MNE,2016,38.5
+Montenegro,MNE,2017,36.9
+Montenegro,MNE,2018,36.8
+Montenegro,MNE,2019,35.7
+Montenegro,MNE,2020,35.4
+Montenegro,MNE,2021,34.3
+Mozambique,MOZ,2019,50.7
+Mozambique,MOZ,2022,49.6
+Myanmar,MMR,2015,38.1
+Myanmar,MMR,2017,30.7
+Namibia,NAM,2015,59.1
+Nepal,NPL,2022,30.0
+Netherlands,NLD,2015,28.2
+Netherlands,NLD,2016,28.2
+Netherlands,NLD,2017,28.5
+Netherlands,NLD,2018,28.1
+Netherlands,NLD,2019,29.2
+Netherlands,NLD,2020,26.0
+Netherlands,NLD,2021,25.7
+Niger,NER,2018,37.3
+Niger,NER,2021,32.9
+Nigeria,NGA,2015,35.9
+Nigeria,NGA,2018,35.1
+Nigeria,NGA,2022,33.9
+North Macedonia,MKD,2015,35.6
+North Macedonia,MKD,2016,34.5
+North Macedonia,MKD,2017,34.2
+North Macedonia,MKD,2018,33.0
+North Macedonia,MKD,2019,33.5
+Norway,NOR,2015,27.5
+Norway,NOR,2016,28.5
+Norway,NOR,2017,27.0
+Norway,NOR,2018,27.6
+Norway,NOR,2019,27.7
+Norway,NOR,2020,28.4
+Norway,NOR,2021,29.1
+Norway,NOR,2022,26.9
+Norway,NOR,2023,26.5
+Pakistan,PAK,2015,31.3
+Pakistan,PAK,2018,29.6
+Panama,PAN,2015,50.8
+Panama,PAN,2016,50.4
+Panama,PAN,2017,49.9
+Panama,PAN,2018,49.2
+Panama,PAN,2019,49.8
+Panama,PAN,2021,50.9
+Panama,PAN,2023,48.9
+Paraguay,PRY,2015,47.6
+Paraguay,PRY,2016,47.9
+Paraguay,PRY,2017,48.5
+Paraguay,PRY,2018,46.0
+Paraguay,PRY,2019,45.7
+Paraguay,PRY,2020,43.5
+Paraguay,PRY,2021,42.9
+Paraguay,PRY,2022,44.6
+Paraguay,PRY,2023,44.2
+Peru,PER,2015,43.4
+Peru,PER,2016,43.6
+Peru,PER,2017,43.3
+Peru,PER,2018,42.4
+Peru,PER,2019,41.5
+Peru,PER,2020,43.7
+Peru,PER,2021,40.1
+Peru,PER,2022,40.3
+Peru,PER,2023,40.7
+Philippines,PHL,2015,44.6
+Philippines,PHL,2018,42.3
+Philippines,PHL,2021,40.7
+Philippines,PHL,2023,39.3
+Poland,POL,2015,31.8
+Poland,POL,2016,31.2
+Poland,POL,2017,29.7
+Poland,POL,2018,30.2
+Poland,POL,2019,28.8
+Poland,POL,2020,28.5
+Poland,POL,2021,28.5
+Poland,POL,2022,28.9
+Poland,POL,2023,28.5
+Portugal,PRT,2015,35.5
+Portugal,PRT,2016,35.2
+Portugal,PRT,2017,33.8
+Portugal,PRT,2018,33.5
+Portugal,PRT,2019,32.8
+Portugal,PRT,2020,34.7
+Portugal,PRT,2021,34.6
+Portugal,PRT,2022,36.3
+Portugal,PRT,2023,33.9
+Qatar,QAT,2017,35.1
+Romania,ROU,2015,35.9
+Romania,ROU,2016,34.4
+Romania,ROU,2017,36.0
+Romania,ROU,2018,35.8
+Romania,ROU,2019,34.8
+Romania,ROU,2020,34.6
+Romania,ROU,2021,33.9
+Romania,ROU,2022,32.3
+Romania,ROU,2023,29.8
+Russian Federation,RUS,2015,36.5
+Russian Federation,RUS,2016,36.7
+Russian Federation,RUS,2017,35.5
+Russian Federation,RUS,2018,35.3
+Russian Federation,RUS,2019,35.7
+Russian Federation,RUS,2020,33.7
+Russian Federation,RUS,2021,35.1
+Russian Federation,RUS,2022,33.9
+Russian Federation,RUS,2023,33.0
+Rwanda,RWA,2016,43.7
+Rwanda,RWA,2023,39.4
+Sao Tome and Principe,STP,2017,40.7
+Senegal,SEN,2018,38.3
+Senegal,SEN,2021,36.2
+Serbia,SRB,2015,40.5
+Serbia,SRB,2016,38.8
+Serbia,SRB,2017,36.1
+Serbia,SRB,2018,35.0
+Serbia,SRB,2019,34.5
+Serbia,SRB,2020,35.0
+Serbia,SRB,2021,33.1
+Serbia,SRB,2022,32.8
+Serbia,SRB,2023,32.8
+Seychelles,SYC,2018,32.1
+Sierra Leone,SLE,2018,35.7
+Slovak Republic,SVK,2015,26.5
+Slovak Republic,SVK,2016,25.2
+Slovak Republic,SVK,2017,23.2
+Slovak Republic,SVK,2018,25.0
+Slovak Republic,SVK,2019,23.2
+Slovak Republic,SVK,2020,24.2
+Slovak Republic,SVK,2021,24.1
+Slovak Republic,SVK,2022,24.1
+Slovak Republic,SVK,2023,23.8
+Slovenia,SVN,2015,25.4
+Slovenia,SVN,2016,24.8
+Slovenia,SVN,2017,24.2
+Slovenia,SVN,2018,24.6
+Slovenia,SVN,2019,24.4
+Slovenia,SVN,2020,24.0
+Slovenia,SVN,2021,24.3
+Slovenia,SVN,2022,24.3
+Slovenia,SVN,2023,24.7
+South Africa,ZAF,2022,54.1
+South Sudan,SSD,2016,44.0
+Spain,ESP,2015,36.2
+Spain,ESP,2016,35.8
+Spain,ESP,2017,34.7
+Spain,ESP,2018,34.7
+Spain,ESP,2019,34.3
+Spain,ESP,2020,34.9
+Spain,ESP,2021,33.9
+Spain,ESP,2022,33.6
+Spain,ESP,2023,33.4
+Sri Lanka,LKA,2016,39.3
+Sri Lanka,LKA,2019,37.7
+St. Lucia,LCA,2015,43.7
+Suriname,SUR,2022,39.2
+Sweden,SWE,2015,29.2
+Sweden,SWE,2016,29.6
+Sweden,SWE,2017,28.8
+Sweden,SWE,2018,30.0
+Sweden,SWE,2019,29.3
+Sweden,SWE,2020,28.9
+Sweden,SWE,2021,29.8
+Sweden,SWE,2022,31.6
+Sweden,SWE,2023,29.3
+Switzerland,CHE,2015,32.3
+Switzerland,CHE,2016,33.0
+Switzerland,CHE,2017,32.7
+Switzerland,CHE,2018,33.1
+Switzerland,CHE,2019,34.0
+Switzerland,CHE,2020,33.7
+Switzerland,CHE,2021,33.8
+Switzerland,CHE,2022,33.8
+Switzerland,CHE,2023,33.5
+Syrian Arab Republic,SYR,2022,26.4
+Tajikistan,TJK,2015,34.0
+Tajikistan,TJK,2021,32.4
+Tajikistan,TJK,2022,39.5
+Tajikistan,TJK,2023,38.0
+Tanzania,TZA,2018,40.5
+Thailand,THA,2015,36.0
+Thailand,THA,2016,36.7
+Thailand,THA,2017,36.4
+Thailand,THA,2018,36.4
+Thailand,THA,2019,34.9
+Thailand,THA,2020,35.0
+Thailand,THA,2021,34.9
+Thailand,THA,2022,34.3
+Thailand,THA,2023,33.5
+Togo,TGO,2015,43.0
+Togo,TGO,2018,42.5
+Togo,TGO,2021,37.9
+Tonga,TON,2015,33.5
+Tonga,TON,2021,27.1
+Tunisia,TUN,2015,32.8
+Tunisia,TUN,2021,33.7
+Turkiye,TUR,2015,42.9
+Turkiye,TUR,2016,41.9
+Turkiye,TUR,2017,43.5
+Turkiye,TUR,2018,42.4
+Turkiye,TUR,2019,43.8
+Turkiye,TUR,2020,43.0
+Turkiye,TUR,2021,44.4
+Turkiye,TUR,2022,44.5
+Turkiye,TUR,2023,43.7
+Uganda,UGA,2016,42.8
+Uganda,UGA,2019,42.7
+Uganda,UGA,2023,38.2
+Ukraine,UKR,2015,25.5
+Ukraine,UKR,2016,25.0
+Ukraine,UKR,2017,26.0
+Ukraine,UKR,2018,26.1
+Ukraine,UKR,2019,26.6
+Ukraine,UKR,2020,25.6
+United Arab Emirates,ARE,2018,26.4
+United Kingdom,GBR,2015,33.3
+United Kingdom,GBR,2016,33.1
+United Kingdom,GBR,2017,32.6
+United Kingdom,GBR,2018,33.7
+United Kingdom,GBR,2019,32.8
+United Kingdom,GBR,2020,32.7
+United Kingdom,GBR,2021,32.4
+United States,USA,2015,41.5
+United States,USA,2016,41.3
+United States,USA,2017,41.4
+United States,USA,2018,41.8
+United States,USA,2019,41.9
+United States,USA,2020,40.0
+United States,USA,2021,39.7
+United States,USA,2022,41.7
+United States,USA,2023,41.8
+Uruguay,URY,2015,40.1
+Uruguay,URY,2016,39.7
+Uruguay,URY,2017,39.5
+Uruguay,URY,2018,39.7
+Uruguay,URY,2019,39.7
+Uruguay,URY,2020,40.2
+Uruguay,URY,2021,40.8
+Uruguay,URY,2022,40.6
+Uruguay,URY,2023,40.9
+Uzbekistan,UZB,2021,32.9
+Uzbekistan,UZB,2022,31.2
+Uzbekistan,UZB,2023,34.5
+Vanuatu,VUT,2019,32.3
+Viet Nam,VNM,2016,35.3
+Viet Nam,VNM,2018,35.7
+Viet Nam,VNM,2020,36.8
+Viet Nam,VNM,2022,36.1
+West Bank and Gaza,PSE,2016,33.7
+West Bank and Gaza,PSE,2023,36.4
+Zambia,ZMB,2015,55.8
+Zambia,ZMB,2022,51.5
+Zimbabwe,ZWE,2017,44.3
+Zimbabwe,ZWE,2019,50.3

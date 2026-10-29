@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Проверочный тест · 25 вопросов</title>
+<style>
+@page { size: A4; margin: 18mm 16mm; }
+:root {
+  --ink:#191713; --faded:#6b6255; --rule:#191713; --light:#d8d0c0;
+  --red:#b3282d; --paper:#fbf8f1;
+  --mono:ui-monospace,'SF Mono','Cascadia Mono','Roboto Mono',Consolas,'Courier New',monospace;
+  --sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#f5f1e8;color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;padding:24px}
+.sheet{max-width:820px;margin:0 auto;background:var(--paper);border:1px solid var(--rule);padding:34px 38px 40px}
+.kicker{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--red);font-weight:700}
+h1{font-family:var(--mono);font-size:34px;line-height:1.05;text-transform:uppercase;letter-spacing:-.02em;margin:4px 0 12px}
+h1 .accent{color:var(--red)}
+.dek{border-left:3px solid var(--rule);padding-left:13px;margin-bottom:14px;font-size:14px;max-width:72ch}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.chip{font-family:var(--mono);font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--faded);border:1px solid var(--light);padding:4px 8px}
+.chip b{color:var(--ink)}
+.instructions{margin:16px 0 4px;padding:12px 14px;border:1px solid var(--rule);background:#fffdf7;font-size:13.5px}
+.instructions b{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.instructions ol{margin:6px 0 0 18px}
+.instructions li{margin-bottom:3px}
+.pq{border-top:1px solid var(--light);padding:13px 0 12px;break-inside:avoid}
+.pq-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.pq-no{font-family:var(--mono);font-size:22px;font-weight:800;color:var(--red);line-height:1}
+.pq-tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faded)}
+.pq h3{font-size:15px;text-transform:uppercase;letter-spacing:.01em;margin:4px 0 5px}
+.pq-prompt{font-size:14px;margin-bottom:8px;max-width:76ch}
+.pq-opts{list-style:none;display:grid;gap:4px}
+.pq-opts li{display:flex;gap:9px;align-items:flex-start;font-size:13.5px;line-height:1.4}
+.ol{font-family:var(--mono);font-size:11px;font-weight:700;border:1px solid var(--rule);min-width:20px;height:20px;display:grid;place-items:center;margin-top:1px}
+.answer{margin-top:8px;font-size:13.5px}
+.answer b{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.sign{display:flex;gap:28px;margin-top:22px;font-size:12px;color:var(--faded);flex-wrap:wrap}
+.sign span{border-bottom:1px solid var(--rule);min-width:180px;padding-bottom:2px}
+.keypage{break-before:page;page-break-before:always;margin-top:0}
+.keypage h2{font-family:var(--mono);font-size:26px;text-transform:uppercase;margin-bottom:6px}
+.keypage p{font-size:13px;color:var(--faded);margin-bottom:12px}
+table.key{border-collapse:collapse;width:100%;font-size:12.5px}
+table.key th{font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;text-align:left;padding:6px 7px;border-bottom:2px solid var(--rule);color:var(--faded)}
+table.key td{padding:5px 7px;border-bottom:1px solid var(--light);vertical-align:top}
+table.key td:nth-child(1){font-family:var(--mono);font-weight:700;width:26px}
+table.key td:nth-child(2){font-family:var(--mono);font-weight:800;color:var(--red);width:28px}
+.dist{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);margin:14px 0 18px}
+.dist div{background:var(--paper);padding:8px 10px}
+.dist .v{font-family:var(--mono);font-size:20px;font-weight:800}
+.dist .l{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--faded)}
+.note{border-left:3px solid #b8860b;background:#f3ecd9;padding:9px 12px;font-size:12.5px;margin-top:14px}
+@media print{
+  body{background:#fff;padding:0}
+  .sheet{border:none;max-width:none;padding:0}
+  .pq{padding:10px 0 9px}
+}
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="kicker">РУДН · визуализация данных с ИИ · проверочная работа</div>
+  <h1>Данные, форматы<br><span class="accent">и качество данных</span></h1>
+  <p class="dek">Проверочный тест по занятиям 1, 2, 4, 5, 6 и ЛР 05–06. Только текстовые вопросы: форматы, типы данных, выбор визуализации и проверки качества.</p>
+  <div class="meta">
+    <span class="chip"><b>25</b> вопросов</span>
+    <span class="chip"><b>4</b> варианта ответа</span>
+    <span class="chip"><b>45</b> минут</span>
+    <span class="chip"><b>1</b> правильный ответ</span>
+  </div>
+
+  <div class="instructions">
+    <b>Инструкция</b>
+    <ol>
+      <li>В каждом вопросе выберите один правильный ответ и обведите его букву.</li>
+      <li>За правильный ответ — 1 балл, за неправильный — 0. Максимум — 25 баллов.</li>
+      <li>Пользоваться конспектами и ИИ-сервисами нельзя.</li>
+      <li>Если вопрос кажется неоднозначным, выбирайте ответ, наиболее близкий к формулировкам лекции.</li>
+    </ol>
+  </div>
+
+  
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">01</span><span class="pq-tag">ЗАНЯТИЕ 1</span></div>
+      <h3>Критерий качества визуализации</h3>
+      <p class="pq-prompt">В лекции сформулирован принцип MIT: визуализация — это инструмент ответа. Какой критерий показывает, что график действительно выполнен качественно?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>График содержит все показатели из таблицы, даже если часть из них не нужна для вопроса.</span></li>
+<li><span class="ol">B</span><span>Использованы максимально яркие цвета и объёмные эффекты.</span></li>
+<li><span class="ol">C</span><span>Зритель может сформулировать ответ по данным, глядя на график.</span></li>
+<li><span class="ol">D</span><span>График построен в том же файле Excel, что и расчёт.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">02</span><span class="pq-tag">ЗАНЯТИЕ 1</span></div>
+      <h3>Порядок рабочего протокола</h3>
+      <p class="pq-prompt">На занятии 1 зафиксирован протокол работы: вопрос → … → … → … → решение. Какой порядок правильный?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Вопрос → ChatGPT → свой расчёт → проверка → решение</span></li>
+<li><span class="ol">B</span><span>Вопрос → свой расчёт → ChatGPT → проверка → решение</span></li>
+<li><span class="ol">C</span><span>Свой расчёт → вопрос → проверка → ChatGPT → решение</span></li>
+<li><span class="ol">D</span><span>Вопрос → свой расчёт → проверка → решение → ChatGPT</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">03</span><span class="pq-tag">ЗАНЯТИЕ 1</span></div>
+      <h3>Сильный вывод</h3>
+      <p class="pq-prompt">Какой вывод соответствует стандарту «число + сравнение + ограничение»?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>«Жильё — самая большая категория, потому что студенты много платят за аренду».</span></li>
+<li><span class="ol">B</span><span>«Расходы за месяц составили 19 500 ₽».</span></li>
+<li><span class="ol">C</span><span>«Диаграмма показывает, что расходы распределены неравномерно».</span></li>
+<li><span class="ol">D</span><span>«Жильё — крупнейшая категория: 12 000 из 23 000 ₽, или 52,2%; данные за один условный месяц не объясняют причин и динамику».</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">04</span><span class="pq-tag">ЗАНЯТИЕ 1</span></div>
+      <h3>Что в ответе ИИ является гипотезой</h3>
+      <p class="pq-prompt">ChatGPT отвечает: «Наибольшую часть расходов составляет питание — почти половину бюджета. Вероятная причина — регулярное посещение кафе». Что здесь является гипотезой, не подтверждённой данными?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Общая сумма расходов.</span></li>
+<li><span class="ol">B</span><span>Название крупнейшей категории.</span></li>
+<li><span class="ol">C</span><span>Причина высоких расходов на питание.</span></li>
+<li><span class="ol">D</span><span>Доля крупнейшей категории.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">05</span><span class="pq-tag">ЗАНЯТИЕ 2</span></div>
+      <h3>Какая задача решается</h3>
+      <p class="pq-prompt">Вопрос к данным: «Связано ли время ожидания с оценкой сервиса?» Какая аналитическая задача решается?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Взаимосвязь</span></li>
+<li><span class="ol">B</span><span>Сравнение</span></li>
+<li><span class="ol">C</span><span>Структура</span></li>
+<li><span class="ol">D</span><span>Динамика</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">06</span><span class="pq-tag">ЗАНЯТИЕ 2</span></div>
+      <h3>Динамика во времени</h3>
+      <p class="pq-prompt">Как менялась нагрузка на кампусные локации с сентября по февраль? Какой тип диаграммы уместен в первую очередь?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Круговая диаграмма</span></li>
+<li><span class="ol">B</span><span>Гистограмма</span></li>
+<li><span class="ol">C</span><span>Линейная диаграмма</span></li>
+<li><span class="ol">D</span><span>Тепловая карта</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">07</span><span class="pq-tag">ЗАНЯТИЕ 2</span></div>
+      <h3>Почему здесь не линия</h3>
+      <p class="pq-prompt">Почему для пары «время ожидания — оценка сервиса» не используют линейную диаграмму?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Значений слишком мало, чтобы провести линию.</span></li>
+<li><span class="ol">B</span><span>Линия соединяет наблюдения в порядке строк и создаёт ложную последовательность.</span></li>
+<li><span class="ol">C</span><span>Линейная диаграмма не поддерживает числовые оси.</span></li>
+<li><span class="ol">D</span><span>Оценки сервиса всегда целые числа.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">08</span><span class="pq-tag">ЗАНЯТИЕ 2</span></div>
+      <h3>Когда и где нагрузка максимальна</h3>
+      <p class="pq-prompt">Нужно ответить на вопрос «когда и где нагрузка максимальна?» по 5 локациям и 4 временным интервалам. Какая форма лучше?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>20 отдельных столбцов</span></li>
+<li><span class="ol">B</span><span>Круговая диаграмма с 20 секторами</span></li>
+<li><span class="ol">C</span><span>Линейная диаграмма с 20 линиями</span></li>
+<li><span class="ol">D</span><span>Тепловая карта</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">09</span><span class="pq-tag">ЗАНЯТИЕ 4</span></div>
+      <h3>Тема, проблема и вопрос</h3>
+      <p class="pq-prompt">Тема: продажи интернет-магазина. Проблема: в августе выручка ниже, чем в июле. Чем аналитический вопрос отличается от темы?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Он делает разрыв проверяемым и фиксирует, что именно нужно установить.</span></li>
+<li><span class="ol">B</span><span>Он всегда содержит причинное объяснение.</span></li>
+<li><span class="ol">C</span><span>Он шире темы и охватывает все показатели бизнеса.</span></li>
+<li><span class="ol">D</span><span>Он формулируется после построения графика.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">10</span><span class="pq-tag">ЗАНЯТИЕ 4</span></div>
+      <h3>Что такое granularity</h3>
+      <p class="pq-prompt">В паспорте задачи указано: granularity = месяц × канал. Что это означает?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Данные собираются раз в месяц.</span></li>
+<li><span class="ol">B</span><span>В таблице ровно два столбца.</span></li>
+<li><span class="ol">C</span><span>Одна строка анализа существует на уровне «месяц + канал».</span></li>
+<li><span class="ol">D</span><span>Период анализа ограничен одним месяцем.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">11</span><span class="pq-tag">ЗАНЯТИЕ 4</span></div>
+      <h3>WHAT, WHY, HOW</h3>
+      <p class="pq-prompt">В модели Tamara Munzner WHAT описывает данные, WHY — задачу, HOW — визуальную форму. Что относится к WHY?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Сущности, атрибуты и единица наблюдения.</span></li>
+<li><span class="ol">B</span><span>Marks, channels и агрегация.</span></li>
+<li><span class="ol">C</span><span>Период и база сравнения.</span></li>
+<li><span class="ol">D</span><span>Действие человека: сравнить, найти, оценить.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">12</span><span class="pq-tag">ЗАНЯТИЕ 4</span></div>
+      <h3>Почему круговая не подходит</h3>
+      <p class="pq-prompt">Нужно показать, какой канал внёс наибольший вклад в падение выручки. Почему круговая диаграмма — плохой кандидат?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Она показывает доли одного целого, но скрывает изменение и вклад.</span></li>
+<li><span class="ol">B</span><span>Она не поддерживает подписи данных.</span></li>
+<li><span class="ol">C</span><span>Она подходит только для временных рядов.</span></li>
+<li><span class="ol">D</span><span>Она всегда искажает значения без сортировки.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">13</span><span class="pq-tag">ЗАНЯТИЕ 4</span></div>
+      <h3>Наблюдение или интерпретация</h3>
+      <p class="pq-prompt">Выручка mobile снизилась на 18%, и на mobile приходится 64% общего снижения. Какой тип утверждения — «на mobile приходится 64% общего снижения»?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Observation: прямо считывается из данных.</span></li>
+<li><span class="ol">B</span><span>Interpretation: требует декомпозиции вкладов.</span></li>
+<li><span class="ol">C</span><span>Causal claim: доказывает причину падения.</span></li>
+<li><span class="ol">D</span><span>Прогноз: требует модели.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">14</span><span class="pq-tag">ЗАНЯТИЕ 5 · ЛР 06</span></div>
+      <h3>Что CSV не хранит</h3>
+      <p class="pq-prompt">Какое утверждение о CSV соответствует лекции?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>CSV хранит типы столбцов, формулы и оформление.</span></li>
+<li><span class="ol">B</span><span>CSV всегда использует запятую и не допускает других разделителей.</span></li>
+<li><span class="ol">C</span><span>CSV поддерживает вложенные объекты и массивы.</span></li>
+<li><span class="ol">D</span><span>CSV — текстовая таблица: типы данных не описаны и восстанавливаются при импорте.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">15</span><span class="pq-tag">ЗАНЯТИЕ 5 · ЛР 06</span></div>
+      <h3>Типы в XML</h3>
+      <p class="pq-prompt">Какое утверждение об XML верно?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Типы значений может задавать внешняя схема XSD.</span></li>
+<li><span class="ol">B</span><span>XML не может задавать типы данных ни при каких условиях.</span></li>
+<li><span class="ol">C</span><span>XML хранит данные только в виде массива.</span></li>
+<li><span class="ol">D</span><span>XML — бинарный формат, нечитаемый человеком.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">16</span><span class="pq-tag">ЗАНЯТИЕ 5 · ЛР 06</span></div>
+      <h3>Типы в JSON</h3>
+      <p class="pq-prompt">Какое утверждение о JSON соответствует лекции?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>JSON поддерживает только строки и числа.</span></li>
+<li><span class="ol">B</span><span>JSON не поддерживает вложенность.</span></li>
+<li><span class="ol">C</span><span>JSON поддерживает 6 типов значений, а дата обычно хранится строкой.</span></li>
+<li><span class="ol">D</span><span>JSON хранит формулы и стили ячеек.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">17</span><span class="pq-tag">ЗАНЯТИЕ 5 · ЛР 06</span></div>
+      <h3>Что внутри .xlsx</h3>
+      <p class="pq-prompt">Чем файл .xlsx является «внутри»?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Обычным CSV-файлом с другим расширением.</span></li>
+<li><span class="ol">B</span><span>ZIP-пакетом связанных XML-частей: листы, стили, формулы.</span></li>
+<li><span class="ol">C</span><span>Бинарным файлом без структуры.</span></li>
+<li><span class="ol">D</span><span>Текстовым файлом с тегами order, date, amount.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">18</span><span class="pq-tag">ЛР 06</span></div>
+      <h3>Ведущие нули</h3>
+      <p class="pq-prompt">Код клиента записан как 001042. Что нужно сделать до импорта?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Преобразовать в число, чтобы можно было суммировать.</span></li>
+<li><span class="ol">B</span><span>Удалить ведущие нули — они не несут смысла.</span></li>
+<li><span class="ol">C</span><span>Разделить код на два столбца.</span></li>
+<li><span class="ol">D</span><span>Назначить тип «текст» и сохранить ведущие нули.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">19</span><span class="pq-tag">ЛР 06</span></div>
+      <h3>Неоднозначная дата</h3>
+      <p class="pq-prompt">Дата записана как 09/10/2026. В чём риск и что делать?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Неясно, 9 октября или 10 сентября; нужно уточнить локаль источника и привести дату к ISO.</span></li>
+<li><span class="ol">B</span><span>Риска нет: все программы читают такие даты одинаково.</span></li>
+<li><span class="ol">C</span><span>Нужно удалить дату, если формат не указан.</span></li>
+<li><span class="ol">D</span><span>Нужно разделить дату на три отдельных столбца.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">20</span><span class="pq-tag">ЛР 06</span></div>
+      <h3>Вложенный массив товаров</h3>
+      <p class="pq-prompt">В JSON один заказ содержит массив items с несколькими товарами. Как правильно превратить его в таблицы?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Записать все товары в одну ячейку через запятую.</span></li>
+<li><span class="ol">B</span><span>Оставить только первый товар, остальные отбросить.</span></li>
+<li><span class="ol">C</span><span>Сделать две связанные таблицы «Заказы» и «Товары» с общим order_id.</span></li>
+<li><span class="ol">D</span><span>Создать по одному столбцу на каждый товар.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">21</span><span class="pq-tag">ЗАНЯТИЕ 6</span></div>
+      <h3>Уровень проверки: нет валюты</h3>
+      <p class="pq-prompt">Правило: валюта обязательна. В строке 2 счёта валюта не заполнена (∅). К какому уровню проверок L1–L4 относится нарушение?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>L2 · Conformity — проверка формы значения.</span></li>
+<li><span class="ol">B</span><span>L1 · Completeness — проверка обязательности значения.</span></li>
+<li><span class="ol">C</span><span>L3 · Consistency — сверка со справочником.</span></li>
+<li><span class="ol">D</span><span>L4 · Accuracy &amp; Integrity — проверка связей и бизнес-правил.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">22</span><span class="pq-tag">ЗАНЯТИЕ 6</span></div>
+      <h3>Уровень проверки: статус PADI</h3>
+      <p class="pq-prompt">В поле «Статус» стоит PADI, допустимые значения — ISSUED, PAID, CANCELLED. Какая проверка ловит ошибку?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>L1 · Completeness</span></li>
+<li><span class="ol">B</span><span>L3 · Reference table lookup</span></li>
+<li><span class="ol">C</span><span>L4 · Key constraints</span></li>
+<li><span class="ol">D</span><span>L2 · Restricted values — допустимый набор значений.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">23</span><span class="pq-tag">ЗАНЯТИЕ 6</span></div>
+      <h3>Уровень проверки: отрасль XXX</h3>
+      <p class="pq-prompt">У клиента C00003 указана отрасль XXX, которой нет в справочнике Industries (RET, MAN). Что это за проверка?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>L3 · Reference table lookup</span></li>
+<li><span class="ol">B</span><span>L1 · Nullable</span></li>
+<li><span class="ol">C</span><span>L2 · Range</span></li>
+<li><span class="ol">D</span><span>L4 · Largest proportion</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">24</span><span class="pq-tag">ЗАНЯТИЕ 6</span></div>
+      <h3>Действие по результату проверки</h3>
+      <p class="pq-prompt">Правило: тип «Внешний» должен составлять наибольшую долю клиентов. Факт: внешних 40%, группа 60%. Какое действие предусмотрено?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Reject — удалить строки и пересчитать отчёт.</span></li>
+<li><span class="ol">B</span><span>Pass — ошибки нет, правило необязательное.</span></li>
+<li><span class="ol">C</span><span>Flag &amp; Pass — сохранить данные с предупреждением и выяснить причину.</span></li>
+<li><span class="ol">D</span><span>Исправить тип клиента вручную, чтобы доля стала 60%.</span></li></ol>
+    </article>
+    <article class="pq">
+      <div class="pq-top"><span class="pq-no">25</span><span class="pq-tag">ЗАНЯТИЕ 6</span></div>
+      <h3>SQL-инъекция и prompt injection</h3>
+      <p class="pq-prompt">В лекции различают SQL-инъекцию и prompt injection. В чём ключевое различие?</p>
+      <ol class="pq-opts"><li><span class="ol">A</span><span>Это одно и то же, только для разных СУБД.</span></li>
+<li><span class="ol">B</span><span>SQL-инъекция внедряет код в запрос к базе, prompt injection — скрытые указания в данных или документе для ИИ-агента.</span></li>
+<li><span class="ol">C</span><span>Prompt injection атакует базу данных, SQL-инъекция — языковую модель.</span></li>
+<li><span class="ol">D</span><span>SQL-инъекция возможна только через API, prompt injection — только через Excel.</span></li></ol>
+    </article>
+
+  <div class="sign">
+    <span>Фамилия, имя, группа</span>
+    <span>Дата</span>
+  </div>
+
+  <div class="keypage">
+    <h2>Ключ и распределение</h2>
+    <p>Для преподавателя. Один правильный ответ на вопрос; шкала: 23–25 — «отлично», 18–22 — «хорошо», 13–17 — «удовлетворительно», 0–12 — требуется повторение.</p>
+
+    <div class="dist">
+      <div><div class="v">4</div><div class="l">Занятие 1</div></div>
+      <div><div class="v">4</div><div class="l">Занятие 2</div></div>
+      <div><div class="v">5</div><div class="l">Занятие 4</div></div>
+      <div><div class="v">7</div><div class="l">Занятия 5 · ЛР 06</div></div>
+      <div><div class="v">5</div><div class="l">Занятие 6</div></div>
+    </div>
+
+    <table class="key">
+      <thead><tr><th>№</th><th>Ответ</th><th>Тема</th><th>Источник</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><b>C</b></td><td>Критерий качества визуализации</td><td>Занятие 1 · принцип MIT</td></tr>
+<tr><td>2</td><td><b>B</b></td><td>Порядок рабочего протокола</td><td>Занятие 1 · рабочий протокол</td></tr>
+<tr><td>3</td><td><b>D</b></td><td>Сильный вывод</td><td>Занятие 1 · итоговый вывод</td></tr>
+<tr><td>4</td><td><b>C</b></td><td>Что в ответе ИИ является гипотезой</td><td>Занятие 1 · AI-аудит</td></tr>
+<tr><td>5</td><td><b>A</b></td><td>Какая задача решается</td><td>Занятие 2 · аналитические задачи</td></tr>
+<tr><td>6</td><td><b>C</b></td><td>Динамика во времени</td><td>Занятие 2 · линейная диаграмма</td></tr>
+<tr><td>7</td><td><b>B</b></td><td>Почему здесь не линия</td><td>Занятие 2 · точечная диаграмма</td></tr>
+<tr><td>8</td><td><b>D</b></td><td>Когда и где нагрузка максимальна</td><td>Занятие 2 · тепловая карта</td></tr>
+<tr><td>9</td><td><b>A</b></td><td>Тема, проблема и вопрос</td><td>Занятие 4 · от проблемы к вопросу</td></tr>
+<tr><td>10</td><td><b>C</b></td><td>Что такое granularity</td><td>Занятие 4 · операциональные решения</td></tr>
+<tr><td>11</td><td><b>D</b></td><td>WHAT, WHY, HOW</td><td>Занятие 4 · модель Munzner</td></tr>
+<tr><td>12</td><td><b>A</b></td><td>Почему круговая не подходит</td><td>Занятие 4 · выбор visual evidence</td></tr>
+<tr><td>13</td><td><b>B</b></td><td>Наблюдение или интерпретация</td><td>Занятие 4 · границы утверждений</td></tr>
+<tr><td>14</td><td><b>D</b></td><td>Что CSV не хранит</td><td>Занятие 5 · формат CSV</td></tr>
+<tr><td>15</td><td><b>A</b></td><td>Типы в XML</td><td>Занятие 5 · формат XML</td></tr>
+<tr><td>16</td><td><b>C</b></td><td>Типы в JSON</td><td>Занятие 5 · формат JSON</td></tr>
+<tr><td>17</td><td><b>B</b></td><td>Что внутри .xlsx</td><td>Занятие 5 · формат Excel</td></tr>
+<tr><td>18</td><td><b>D</b></td><td>Ведущие нули</td><td>ЛР 06 · типичные ошибки импорта</td></tr>
+<tr><td>19</td><td><b>A</b></td><td>Неоднозначная дата</td><td>ЛР 06 · даты и ведущие нули</td></tr>
+<tr><td>20</td><td><b>C</b></td><td>Вложенный массив товаров</td><td>ЛР 06 · JSON → таблицы</td></tr>
+<tr><td>21</td><td><b>B</b></td><td>Уровень проверки: нет валюты</td><td>Занятие 6 · карта L1–L4</td></tr>
+<tr><td>22</td><td><b>D</b></td><td>Уровень проверки: статус PADI</td><td>Занятие 6 · L2, допустимый статус</td></tr>
+<tr><td>23</td><td><b>A</b></td><td>Уровень проверки: отрасль XXX</td><td>Занятие 6 · L3, сверка со справочником</td></tr>
+<tr><td>24</td><td><b>C</b></td><td>Действие по результату проверки</td><td>Занятие 6 · Pass, Flag &amp; Pass, Reject</td></tr>
+<tr><td>25</td><td><b>B</b></td><td>SQL-инъекция и prompt injection</td><td>Занятие 6 · вводные слайды</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note">
+      Разбор каждого ответа с правилом и ссылкой на слайд есть в интерактивной версии теста
+      (<code>data_quality_quiz_25.html</code>). Она открывается в браузере без интернета и показывает результат сразу после ответа.
+    </div>
+  </div>
+</div>
+</body>
+</html>

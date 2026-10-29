@@ -1,0 +1,28 @@
+# Секреты и состояние — никогда не коммитить
+**/.env
+**/.env.*
+!**/.env.example
+**/*.pem
+**/htpasswd
+**/edge/certs/
+**/edge/acme/
+**/edge/letsencrypt/
+
+# Состояние стендов
+**/workspace/data/
+**/workspace/output/
+**/catalog/catalog.json
+**/catalog/catalog.md
+
+# Проекты со своими репозиториями (клонируются отдельно)
+gameconnect/
+adventuremazes/
+
+# Локальное состояние агента и производное
+**/.opencode/
+node_modules/
+dist/
+**/__pycache__/
+*.pyc
+*.log
+.DS_Store

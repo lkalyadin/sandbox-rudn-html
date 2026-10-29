@@ -1,0 +1,16 @@
+# Локальные секреты
+.env
+
+# Состояние стенда — не в git
+workspace/data/
+workspace/output/
+edge/certs/*.pem
+edge/htpasswd
+
+# Мусор
+*.log
+.DS_Store
+
+# Побочные файлы Python
+__pycache__/
+*.pyc

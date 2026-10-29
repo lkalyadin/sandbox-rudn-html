@@ -1,0 +1,163 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Слой 3 из 4. Это НЕ песочница.
+  //
+  // Из документации OpenCode: «shell runs with the host user's filesystem,
+  // process, and network authority», то есть правила ниже — вежливая просьба,
+  // а не граница безопасности. Граница — gVisor + read-only rootfs + egress
+  // allowlist. Здесь мы просто убираем лишние способы навредить и упрощаем
+  // интерфейс для студентов.
+  //
+  // Файл лежит в системном каталоге (/etc/opencode), поэтому его правила
+  // старше пользовательских и проектных: студент не сможет их переопределить
+  // из рабочей папки.
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  "update": "disable",
+
+  // Дефолтная модель.
+  // Провайдер `opencode` — встроенный бесплатный: apiKey "public",
+  // baseURL https://opencode.ai/inference/openai/v1, стоимость 0.
+  // Креды не нужны. Проверено запросом к /api/model на живом сервере.
+  // Альтернативы из той же бесплатной группы (сменить при желании):
+  //   opencode/glm-5.3-flash-free, opencode/deepseek-v4.1-flash-free,
+  //   opencode/mimo-v2.6-flash-free
+  "model": "opencode/big-pickle",
+
+  // Публичные ссылки на сессии — вон. Иначе студент (или инъекция в промпт)
+  // может выложить содержимое рабочей папки в открытый веб-доступ.
+  "share": "disabled",
+
+  // Ограничение на размер того, что агент возвращает из инструментов.
+  // Иначе один `cat` большого CSV раздувает контекст и место на диске.
+  "tool_output": {
+    "max_lines": 400,
+    "max_bytes": 32768
+  },
+
+  // Загрузка картинок из браузера: храним только уменьшенные копии.
+  // Учтите: лимита на размер НЕ-картиночных файлов в OpenCode нет вообще —
+  // ни в конфиге, ни в схеме. Это закрывается только на уровне контейнера
+  // (квота на каталог /work), см. README, раздел про лимиты.
+  "media": {
+    "image": {
+      "auto_resize": true,
+      "max_width": 1600,
+      "max_height": 1600,
+      "max_base64_bytes": 2097152
+    }
+  },
+
+  "permissions": [
+    // За пределы рабочей папки агент не ходит вообще.
+    { "action": "external_directory", "resource": "*", "effect": "deny" },
+
+    // В интернет хода нет, и тянуть туда нечего. Дублируем через permissions
+    // и через policies (см. ниже): policies снять нельзя даже кнопкой
+    // «Allow always» в UI.
+    { "action": "webfetch",  "resource": "*", "effect": "deny" },
+    { "action": "websearch", "resource": "*", "effect": "deny" },
+
+    // ── Команды ───────────────────────────────────────────────────────────────
+    // В v2 действие называется `shell` (в v1 было `bash`), и правила
+    // применяются по принципу «последнее совпавшее выигрывает» — поэтому
+    // широкий `ask` идёт первым, а список разрешённого после него.
+    //
+    // Читать это как защиту НЕЛЬЗЯ, и документация говорит то же самое:
+    // «shell runs with the host user's filesystem, process, and network
+    // authority», а разбор команды — «best effort». Пример: разрешённый
+    // `python3 *` уже даёт выполнить любой код через `python3 -c`.
+    // Настоящая граница — контейнер (слои 1–2), а это лишь способ убрать
+    // лишнее и сделать демо предсказуемым.
+    //
+    // Всё, чего нет в списке, спросит разрешения у студента прямо в UI —
+    // для учебного стенда это, наоборот, полезно. Если хотите, чтобы агент
+    // вообще не переспрашивал, замените первый `ask` на `allow`.
+    { "action": "shell", "resource": "*", "effect": "ask" },
+
+    // Рутина, из которой состоит анализ данных на экономике.
+    { "action": "shell", "resource": "python3 *", "effect": "allow" },
+    { "action": "shell", "resource": "python *",  "effect": "allow" },
+    { "action": "shell", "resource": "uv *",      "effect": "allow" },
+    { "action": "shell", "resource": "ls *",      "effect": "allow" },
+    { "action": "shell", "resource": "cat *",     "effect": "allow" },
+    { "action": "shell", "resource": "head *",    "effect": "allow" },
+    { "action": "shell", "resource": "tail *",    "effect": "allow" },
+    { "action": "shell", "resource": "wc *",      "effect": "allow" },
+    { "action": "shell", "resource": "grep *",    "effect": "allow" },
+    { "action": "shell", "resource": "find *",    "effect": "allow" },
+    { "action": "shell", "resource": "sort *",    "effect": "allow" },
+    { "action": "shell", "resource": "uniq *",    "effect": "allow" },
+    { "action": "shell", "resource": "cut *",     "effect": "allow" },
+    { "action": "shell", "resource": "sed *",     "effect": "allow" },
+    { "action": "shell", "resource": "awk *",     "effect": "allow" },
+    { "action": "shell", "resource": "mkdir *",   "effect": "allow" },
+    { "action": "shell", "resource": "cp *",      "effect": "allow" },
+    { "action": "shell", "resource": "mv *",      "effect": "allow" },
+    { "action": "shell", "resource": "touch *",   "effect": "allow" },
+    { "action": "shell", "resource": "echo *",    "effect": "allow" },
+    { "action": "shell", "resource": "git status *", "effect": "allow" },
+    { "action": "shell", "resource": "git diff *",   "effect": "allow" },
+    { "action": "shell", "resource": "git log *",    "effect": "allow" },
+
+    // Удаление — только с подтверждением: студент может нажать не туда.
+    { "action": "shell", "resource": "rm *", "effect": "ask" },
+
+    // Секреты: единственное, что реально лежит в контейнере, — это креды
+    // моделей. Агенту они не нужны.
+    { "action": "read", "resource": "**/.env",     "effect": "deny" },
+    { "action": "read", "resource": "**/.env.*",   "effect": "deny" },
+    { "action": "read", "resource": "**/.ssh/**",  "effect": "deny" },
+    { "action": "read", "resource": "**/.aws/**",  "effect": "deny" },
+    { "action": "read", "resource": "**/.config/opencode/**", "effect": "deny" },
+    { "action": "read", "resource": "**/opencode.db",          "effect": "deny" },
+    { "action": "read", "resource": "/etc/**",     "effect": "deny" },
+
+    // Системные файлы тоже не трогаем (rootfs всё равно read-only).
+    { "action": "edit", "resource": "/etc/**",     "effect": "deny" },
+    { "action": "edit", "resource": "**/.config/opencode/**", "effect": "deny" }
+  ],
+
+  // Политики — жёсткий запрет. В отличие от permissions их нельзя снять
+  // ответом «Allow always», и они не подчиняются проектному конфигу.
+  "policies": [
+    // Только бесплатный провайдер OpenCode. Студент не подключит свой платный
+    // ключ и не сожжёт чужой бюджет.
+    // ВАЖНО: ID провайдера именно `opencode` (не `opencode-free` и не
+    // `opencode-zen`) — это проверено через /api/provider на живом сервере.
+    // Если после смены версии модели пропадут из UI — виновата эта строка.
+    { "action": "provider.use", "resource": "*",           "effect": "deny"  },
+    { "action": "provider.use", "resource": "opencode",    "effect": "allow" },
+    { "action": "provider.use", "resource": "opencode-go", "effect": "allow" },
+
+    // В интернета всё равно нет, но пусть будет.
+    { "action": "tool.use", "resource": "webfetch:*",  "effect": "deny" },
+    { "action": "tool.use", "resource": "websearch:*", "effect": "deny" },
+    { "action": "tool.use", "resource": "external_directory:*", "effect": "deny" },
+
+    // Привилегии и сети — то, через что обычно «взламывают» песочницу.
+    { "action": "tool.use", "resource": "shell:sudo *",      "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:su *",        "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:ssh *",       "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:scp *",       "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:sftp *",      "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:curl *",      "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:wget *",      "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:nc *",        "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:ncat *",      "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:telnet *",    "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:nmap *",      "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:mount *",     "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:umount *",    "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:docker *",    "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:systemctl *", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:pip install *", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:apt *",       "effect": "deny" },
+
+    // Уходить из песочницы через git тоже некуда и незачем.
+    { "action": "tool.use", "resource": "shell:git push *",   "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:git remote *", "effect": "deny" }
+  ]
+}

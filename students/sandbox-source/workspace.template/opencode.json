@@ -1,0 +1,12 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "providers": {
+    "opencode": {
+      "models": {
+        "big-pickle": {
+          "disabled": true
+        }
+      }
+    }
+  }
+}

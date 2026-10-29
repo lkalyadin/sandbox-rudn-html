@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Дополнительный блок · ИИ и проверка результатов</title>
+<style>
+:root{
+  --paper:#f5f1e8;
+  --paper-2:#fbf8f1;
+  --ink:#191713;
+  --faded:#6b6255;
+  --rule:#191713;
+  --rule-light:#d8d0c0;
+  --red:#b3282d;
+  --red-soft:#f3d4d3;
+  --green:#3f7448;
+  --green-soft:#dce8d9;
+  --blue:#24557e;
+  --ochre:#b8860b;
+  --mono:ui-monospace,'SF Mono','Cascadia Mono','Roboto Mono',Consolas,'Courier New',monospace;
+  --sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:var(--mono);font-size:15px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+button{font:inherit;color:inherit}
+.shell{max-width:1020px;margin:0 auto;padding:26px 24px 80px}
+
+/* ---------- header ---------- */
+.masthead{border-top:3px solid var(--rule);border-bottom:1px solid var(--rule);padding:10px 0 18px}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+  border-bottom:1px solid var(--rule-light);padding-bottom:9px;margin-bottom:18px}
+.kicker{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--red);font-weight:700}
+.kicker span{color:var(--faded);font-weight:400}
+.ghost-btn{background:transparent;border:1px solid var(--ink);padding:6px 12px;cursor:pointer;
+  font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.ghost-btn:hover{background:var(--ink);color:var(--paper)}
+h1{font-size:clamp(32px,5.6vw,58px);line-height:1.02;letter-spacing:-.02em;font-weight:800;
+  text-transform:uppercase;margin:4px 0 14px}
+h1 .accent{color:var(--red)}
+.dek{max-width:76ch;font-size:15px;border-left:3px solid var(--rule);padding-left:14px;margin-bottom:16px}
+.dek b{font-weight:700}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.chip{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--faded);
+  border:1px solid var(--rule-light);padding:4px 8px;background:var(--paper-2)}
+.chip b{color:var(--ink)}
+
+/* ---------- cheat strip ---------- */
+.cheat{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);
+  border:1px solid var(--rule);margin-top:20px}
+.cheat div{background:var(--paper);padding:10px 12px}
+.cheat .n{font-size:10px;letter-spacing:.1em;color:var(--red);font-weight:700}
+.cheat .f{font-size:13px;font-weight:700;text-transform:uppercase;margin:1px 0 3px}
+.cheat .d{font-size:11.5px;line-height:1.35;color:var(--faded)}
+@media(max-width:760px){.cheat{grid-template-columns:1fr 1fr}}
+
+/* ---------- progress ---------- */
+.quizbar{position:sticky;top:0;z-index:20;background:var(--paper);
+  border-bottom:1px solid var(--rule);padding:9px 0 8px;margin-top:26px}
+.quizbar-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faded);margin-bottom:6px}
+.quizbar-row b{color:var(--ink)}
+.progress{height:6px;background:var(--rule-light);border:1px solid var(--rule);overflow:hidden}
+.progress-fill{height:100%;width:0;background:var(--red);transition:width .35s ease}
+
+/* ---------- question ---------- */
+#stage{margin-top:22px}
+.qcard{border:1px solid var(--rule);background:var(--paper-2);padding:20px 22px 22px;
+  animation:rise .22s ease}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.qtop{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px}
+.qno{font-size:38px;line-height:1;font-weight:800;color:var(--red);font-variant-numeric:tabular-nums}
+.tag{font-size:10px;letter-spacing:.09em;text-transform:uppercase;border:1px solid var(--rule);
+  padding:4px 8px;white-space:nowrap;background:var(--paper)}
+.tag.boss{background:var(--red);color:var(--paper);border-color:var(--red)}
+.qcard h2{font-size:clamp(19px,2.6vw,25px);line-height:1.2;text-transform:uppercase;
+  font-weight:800;margin:2px 0 10px}
+.prompt{font-family:var(--sans);font-size:16px;line-height:1.55;max-width:74ch;margin-bottom:14px}
+.prompt code{font-family:var(--mono);font-size:.88em;background:#ece3d2;padding:1px 4px;border:1px solid var(--rule-light)}
+.hint{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--faded);margin:-4px 0 10px}
+
+/* ---------- data table ---------- */
+.table-wrap{border:1px solid var(--rule);overflow-x:auto;margin:0 0 16px;background:var(--paper)}
+.table-cap{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--faded);
+  padding:6px 9px;border-bottom:1px solid var(--rule-light);white-space:nowrap}
+.table-cap b{color:var(--ink)}
+table.data{border-collapse:collapse;width:100%;font-size:12px;white-space:nowrap}
+table.data th{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--faded);
+  text-align:left;padding:6px 10px;border-bottom:1px solid var(--rule);font-weight:600}
+table.data td{padding:6px 10px;border-bottom:1px solid var(--rule-light);font-variant-numeric:tabular-nums}
+table.data tr:last-child td{border-bottom:none}
+table.data th.key,table.data td.key{background:#ece3d2;color:var(--ink)}
+table.data th.key::after{content:' ◆';color:var(--red);font-size:8px}
+table.data td.bad{background:var(--red-soft);box-shadow:inset 0 0 0 1px var(--red)}
+table.data td.bad::after{content:' ✕';color:var(--red);font-weight:700}
+
+/* ---------- options ---------- */
+.options{display:grid;gap:8px;margin-top:4px}
+.opt{display:flex;align-items:flex-start;gap:11px;text-align:left;width:100%;
+  border:1px solid var(--rule-light);background:var(--paper);padding:11px 13px;cursor:pointer;
+  font-family:var(--sans);font-size:15px;line-height:1.4;transition:border-color .12s,background .12s}
+.opt:hover:not(:disabled){border-color:var(--ink);background:#fffdf7}
+.opt .letter{flex:0 0 23px;height:23px;border:1px solid var(--rule);display:grid;place-items:center;
+  font-family:var(--mono);font-size:11px;font-weight:700;margin-top:1px}
+.opt .opt-text{flex:1}
+.opt code{font-family:var(--mono);font-size:.85em;background:#ece3d2;padding:1px 4px}
+.opt.sel{border-color:var(--ink);background:#fffdf7;box-shadow:inset 3px 0 0 var(--ink)}
+.opt.sel .letter{background:var(--ink);color:var(--paper)}
+.opt.correct{border-color:var(--green);background:var(--green-soft);box-shadow:inset 3px 0 0 var(--green)}
+.opt.correct .letter{background:var(--green);border-color:var(--green);color:#fff}
+.opt.wrong{border-color:var(--red);background:var(--red-soft);box-shadow:inset 3px 0 0 var(--red)}
+.opt.wrong .letter{background:var(--red);border-color:var(--red);color:#fff}
+.opt.dim{opacity:.55}
+.opt:disabled{cursor:default}
+.opt .mark{margin-left:auto;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+
+/* ---------- feedback ---------- */
+.feedback{margin-top:15px;padding:13px 15px;border-left:4px solid;font-family:var(--sans);font-size:14.5px;line-height:1.5}
+.feedback.ok{border-color:var(--green);background:var(--green-soft)}
+.feedback.no{border-color:var(--red);background:var(--red-soft)}
+.feedback .fhead{font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+  font-weight:700;margin-bottom:5px}
+.feedback.ok .fhead{color:var(--green)}
+.feedback.no .fhead{color:var(--red)}
+.feedback p{margin-bottom:7px}
+.feedback p:last-child{margin-bottom:0}
+.rule{font-family:var(--mono);font-size:11.5px;line-height:1.4;color:var(--faded);
+  border-top:1px dashed rgba(25,23,19,.25);padding-top:7px;margin-top:9px}
+.rule b{color:var(--ink)}
+
+/* ---------- actions ---------- */
+.actions{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:16px;flex-wrap:wrap}
+.btn{border:1px solid var(--ink);background:var(--paper);padding:9px 20px;cursor:pointer;
+  font-size:11px;letter-spacing:.09em;text-transform:uppercase;font-weight:700;transition:.12s}
+.btn:hover:not(:disabled){background:var(--ink);color:var(--paper)}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn.primary:hover:not(:disabled){background:var(--red);border-color:var(--red)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn.red{background:var(--red);border-color:var(--red);color:var(--paper)}
+.btn.red:hover{background:var(--ink);border-color:var(--ink)}
+.kbd-hint{font-size:10px;color:var(--faded);letter-spacing:.05em}
+
+/* ---------- result ---------- */
+.result{border:1px solid var(--rule);background:var(--paper-2);padding:26px 24px;margin-top:22px;animation:rise .3s ease}
+.result-top{display:flex;gap:26px;align-items:flex-start;flex-wrap:wrap;
+  border-bottom:2px solid var(--rule);padding-bottom:18px;margin-bottom:18px}
+.score-big{font-size:74px;line-height:.9;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.04em}
+.score-big small{font-size:22px;color:var(--faded);font-weight:400;letter-spacing:0}
+.grade{font-size:clamp(22px,3.4vw,34px);text-transform:uppercase;font-weight:800;line-height:1.1}
+.grade-sub{font-family:var(--sans);font-size:14.5px;color:var(--faded);max-width:56ch;margin-top:7px}
+.result-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);
+  border:1px solid var(--rule);margin:0 0 20px}
+.result-stats div{background:var(--paper);padding:9px 12px}
+.result-stats .v{font-size:21px;font-weight:700;font-variant-numeric:tabular-nums}
+.result-stats .l{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--faded)}
+@media(max-width:600px){.result-stats{grid-template-columns:1fr}}
+.review-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+  flex-wrap:wrap;margin-bottom:8px}
+.review-head h3{font-size:14px;text-transform:uppercase;letter-spacing:.06em}
+details.rev{border:1px solid var(--rule-light);background:var(--paper);margin-bottom:7px}
+details.rev summary{cursor:pointer;padding:9px 12px;font-size:13px;display:flex;gap:9px;align-items:baseline;list-style:none}
+details.rev summary::-webkit-details-marker{display:none}
+details.rev summary .ico{font-weight:700;font-size:12px;flex:0 0 16px}
+details.rev.ok summary .ico{color:var(--green)}
+details.rev.no summary .ico{color:var(--red)}
+details.rev summary .rq{flex:1}
+details.rev summary .rt{font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--faded);white-space:nowrap}
+.rev-body{padding:0 12px 12px 37px;font-family:var(--sans);font-size:14px;line-height:1.5}
+.rev-body .ans{margin-bottom:4px}
+.rev-body .ans b{font-family:var(--mono);font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--faded)}
+.rev-body .ans.good b{color:var(--green)}
+.rev-body .ans.bad b{color:var(--red)}
+.rev-body .why{margin-top:8px;border-top:1px dashed var(--rule-light);padding-top:8px;color:#3c372e}
+
+/* ---------- modal ---------- */
+.modal{position:fixed;inset:0;z-index:100;display:none;align-items:flex-start;justify-content:center;
+  padding:30px 16px;background:rgba(25,23,19,.55);overflow-y:auto}
+.modal.open{display:flex}
+.modal-panel{background:var(--paper);border:1px solid var(--rule);max-width:780px;width:100%;
+  box-shadow:8px 8px 0 rgba(25,23,19,.18);animation:rise .2s ease}
+.modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:12px 16px;border-bottom:2px solid var(--rule)}
+.modal-head h2{font-size:16px;text-transform:uppercase;letter-spacing:.05em}
+.modal-body{padding:16px 18px 22px;font-family:var(--sans);font-size:14.5px;line-height:1.55}
+.modal-body h3{font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--red);margin:16px 0 5px}
+.modal-body h3:first-child{margin-top:0}
+.modal-body p{margin-bottom:8px}
+.modal-body code{font-family:var(--mono);font-size:.86em;background:#ece3d2;padding:1px 4px;border:1px solid var(--rule-light)}
+.modal-body .mnemonic{border:1px solid var(--rule);background:var(--paper-2);padding:10px 12px;
+  font-family:var(--mono);font-size:12px;line-height:1.6;margin:12px 0}
+.modal-body .note{border-left:3px solid var(--ochre);background:#f3ecd9;padding:9px 12px;font-size:13.5px;margin-top:14px}
+
+/* ---------- footer ---------- */
+footer{margin-top:34px;border-top:1px solid var(--rule);padding-top:10px;
+  font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--faded);
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+@media(max-width:640px){
+  .shell{padding:18px 14px 60px}
+  .qcard{padding:15px 14px 18px}
+  .qno{font-size:30px}
+  .prompt{font-size:15px}
+  .opt{font-size:14px;padding:10px}
+  .score-big{font-size:58px}
+  .kbd-hint{display:none}
+}
+@media print{
+  .quizbar,.ghost-btn,.actions,.modal{display:none!important}
+  body{background:#fff}
+  .qcard,.result{break-inside:avoid}
+}
+
+/* ---------- additions for the test ---------- */
+.qmeta{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--faded);margin-top:2px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--faded);margin-top:10px}
+.legend b{color:var(--ink)}
+@media print{
+  .qcard{page-break-inside:avoid}
+  .test-head{display:block}
+}
+
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="masthead">
+    <div class="topline">
+      <div class="kicker">РУДН · визуализация данных с ИИ <span>· проверочный тест</span></div>
+      <button class="ghost-btn" id="cheatBtn" type="button">Памятка</button>
+    </div>
+    <h1>ИИ и проверка<br><span class="accent">его результатов</span></h1>
+    <p class="dek">
+      12 прикладных вопросов о работе с ИИ: что отправлять в чат, как ставить запрос, как проверять конвертацию, расчёты, графики и выводы модели. В каждом вопросе один правильный вариант из четырёх.
+      <b>После ответа — разбор и источник.</b> Изображений нет: только текст, данные и проверки.
+    </p>
+    <div class="meta">
+      <span class="chip"><b>12</b> вопросов</span>
+      <span class="chip"><b>~20</b> минут</span>
+      <span class="chip"><b>4</b> варианта ответа</span>
+      <span class="chip">работает <b>офлайн</b></span>
+      
+    </div>
+
+    <div class="cheat" aria-hidden="true">
+      <div><div class="n">01</div><div class="f">Фрагмент</div><div class="d">Заголовки, 5–20 строк, схема полей и проверки.</div></div>
+<div><div class="n">02</div><div class="f">Запрос</div><div class="d">Целевая схема, типы, формат даты, правило разворота.</div></div>
+<div><div class="n">03</div><div class="f">Проверка</div><div class="d">Счётчики строк, контрольные суммы, выборочный пересчёт.</div></div>
+<div><div class="n">04</div><div class="f">Вывод</div><div class="d">Утверждение → доказательство → решение; уверенность ≠ evidence.</div></div>
+    </div>
+  </header>
+
+  <div class="quizbar">
+    <div class="quizbar-row">
+      <span id="progressLabel">Вопрос <b>1</b> из <b>12</b></span>
+      <span id="progressScore">Правильно: <b>0</b></span>
+    </div>
+    <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+  <main id="stage" aria-live="polite"></main>
+
+  <footer>
+    <span>ИИ · данные · визуализация · проверка</span>
+    <span>12 вопросов · 4 варианта · без изображений</span>
+  </footer>
+</div>
+
+<!-- Шпаргалка -->
+<div class="modal" id="cheatModal" role="dialog" aria-modal="true" aria-labelledby="cheatTitle">
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h2 id="cheatTitle">Памятка · как проверить ИИ</h2>
+      <button class="ghost-btn" id="cheatClose" type="button">Закрыть</button>
+    </div>
+    <div class="modal-body">
+      <h3>1 · Что отправить ИИ</h3>
+      <p>Заголовки, 5–20 характерных строк (обычные и проблемные значения), описание полей, целевые типы и правила проверки. Полный файл — только при разрешении и без конфиденциальных данных.</p>
+      <p><b>Не отправлять:</b> ФИО, телефоны, адреса, номера договоров и другие персональные данные без обезличивания и разрешения.</p>
+
+      <h3>2 · Как поставить запрос</h3>
+      <p>Задайте целевую схему: какие таблицы, какие поля, типы, формат даты, что делать с вложенными массивами. Попросите показать число строк и перечислить поля, которые нельзя преобразовать однозначно.</p>
+
+      <h3>3 · Что проверить после ИИ</h3>
+      <p><b>Конвертация:</b> число строк до и после, контрольные суммы, несколько сложных примеров. <b>Код:</b> row counts, дубликаты, фильтры, ручной пересчёт. <b>Агрегация:</b> единица наблюдения и granularity; сумма вкладов должна сходиться с итогом.</p>
+
+      <h3>4 · Визуализация и выводы</h3>
+      <p>Проверьте базу и масштаб оси, единицы, подписи и абсолютные значения. Причинное утверждение требует механизма и контроля альтернатив; сезонность — истории за несколько лет.</p>
+
+      <div class="mnemonic">
+        ФРАГМЕНТ → ЗАПРОС → ПРОВЕРКА → ВЫВОД<br>
+        <span style="color:var(--faded)">Уверенность ИИ ≠ evidence: нужны формула, ячейки и пересчёт.</span>
+      </div>
+
+      <div class="note">
+        AI-лог фиксирует промпт, версию модели, исправления и ограничения данных. Это делает результат воспроизводимым, но не заменяет независимую проверку.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    "tag": "ИИ · ДАННЫЕ",
+    "title": "Что отправить в чат",
+    "prompt": "Нужно, чтобы ИИ помог разобрать CSV на 180 000 строк. Что разумнее отправить в чат на первом шаге?",
+    "options": [
+      "Весь файл целиком — так модель увидит все исключения.",
+      "Только названия столбцов без примеров значений.",
+      "Скриншот первых строк таблицы.",
+      "Заголовки, 5–20 характерных строк (обычные и проблемные), описание полей, целевые типы и правила проверки."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "ИИ анализирует структуру, а не «файл вообще». Фрагмент с обычными и проблемными значениями плюс схема и проверки дают ему контекст. Полный файл дорог, может содержать конфиденциальные данные, а одни заголовки не показывают форматы. <span style=\"color:var(--faded)\">Источник: ЛР 06 · фрагмент для ИИ.</span>",
+    "rule": "Заголовки + 5–20 характерных строк + схема + проверки."
+  },
+  {
+    "tag": "ИИ · ДАННЫЕ",
+    "title": "Персональные данные в чате",
+    "prompt": "Студент хочет построить график по выгрузке с ФИО, телефонами и суммами заказов и собирается отправить весь файл в публичный чат-бот. Что нужно сделать прежде всего?",
+    "options": [
+      "Убрать или обезличить персональные данные и получить разрешение на отправку; при возможности отправить агрегаты.",
+      "Переименовать файл в .txt.",
+      "Сжать файл в архив.",
+      "Попросить бота не сохранять данные."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Конфиденциальные данные нельзя отправлять во внешний сервис без разрешения. Обезличивание или агрегация снижают риск, но решение об отправке фиксируется отдельно. Переименование, архив и обещание бота не защищают данные. <span style=\"color:var(--faded)\">Источник: Занятие 5 · ИИ и конфиденциальность.</span>",
+    "rule": "Во внешний ИИ — только разрешённые и обезличенные данные."
+  },
+  {
+    "tag": "ИИ · ДАННЫЕ",
+    "title": "ИИ видит число, а не смысл",
+    "prompt": "В фрагменте есть столбец id со значениями 001042, 001043. ИИ предлагает преобразовать его в число. Почему это опасно и что добавить в запрос?",
+    "options": [
+      "Опасно только для больших чисел; ничего добавлять не нужно.",
+      "Числовой тип удобнее для сортировки, поэтому предложение верное.",
+      "Это идентификатор: ведущие нули потеряются; в запросе нужно указать «id — текст, арифметику не выполнять».",
+      "Нужно удалить столбец id, чтобы не мешал."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Модель видит значения, но не знает их смысла: без контекста 001042 выглядит числом. В запросе фиксируют, что это идентификатор, задают тип «текст» и запрещают арифметику. <span style=\"color:var(--faded)\">Источник: ЛР 06 · контекст полей.</span>",
+    "rule": "ИИ получает структуру, а не намерение автора: тип и смысл полей задаём явно."
+  },
+  {
+    "tag": "ИИ · ЗАПРОС",
+    "title": "Запрос на преобразование JSON",
+    "prompt": "Нужно превратить небольшой JSON с заказами и массивом товаров в таблицы. Какой запрос к ИИ даст проверяемый результат?",
+    "options": [
+      "«Сделай из этого JSON красивые таблицы».",
+      "«Сделай таблицы \"Заказы\" и \"Товары\": id — текст, сумма — число, дата в формате ГГГГ-ММ-ДД, для items — отдельная строка на товар; покажи число строк и перечисли поля, которые нельзя преобразовать однозначно».",
+      "«Преобразуй JSON в Excel, чтобы всё было удобно».",
+      "«Разбери JSON и скажи, нет ли здесь ошибок»."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Проверяемый запрос задаёт целевую схему, типы, формат даты, правило разворота массива и встроенную проверку: число строк и список неоднозначных полей. Остальные формулировки не фиксируют результат. <span style=\"color:var(--faded)\">Источник: ЛР 06 · запрос к ИИ.</span>",
+    "rule": "Хороший запрос задаёт целевую схему, типы и проверки."
+  },
+  {
+    "tag": "ИИ · ПРОВЕРКА",
+    "title": "Позиции не потерялись?",
+    "prompt": "ИИ развернул JSON с заказами и товарами в две таблицы. Какой набор проверок лучше всего покажет, что позиции не потеряны?",
+    "options": [
+      "Открыть обе таблицы и посмотреть, «выглядят ли они нормально».",
+      "Проверить, что в таблицах нет пустых ячеек.",
+      "Попросить ИИ подтвердить, что он ничего не потерял.",
+      "Сравнить число заказов и товаров до и после, сверить контрольные суммы и проверить несколько заказов с несколькими позициями."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "Конвертацию проверяют счётчиками, контрольными суммами и выборочными сложными случаями. «Выглядит нормально» и самоотчёт модели не являются доказательством: потеря одной позиции может не бросаться в глаза. <span style=\"color:var(--faded)\">Источник: ЛР 06 · контроль преобразований.</span>",
+    "rule": "Конвертацию проверяем счётчиками и суммами, а не глазами."
+  },
+  {
+    "tag": "ИИ · ПРОВЕРКА",
+    "title": "Код запускается — достаточно ли",
+    "prompt": "ИИ написал код, который считает выручку по месяцам и каналам. Код запускается без ошибок. Что ещё обязательно проверить?",
+    "options": [
+      "Число строк, суммы, дубликаты и несколько вручную пересчитанных примеров.",
+      "Что код написан в одну строку.",
+      "Что использованы функции последней версии библиотеки.",
+      "Что ИИ объяснил каждую строку кода."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Успешный запуск означает только отсутствие синтаксических ошибок. Логика может потерять строки, удвоить данные при соединении или взять не тот период. Проверяют row counts, контрольные суммы, дубликаты и выборочный ручной расчёт. <span style=\"color:var(--faded)\">Источник: Занятие 4 · проверка кода ИИ.</span>",
+    "rule": "Работающий код ≠ верный результат."
+  },
+  {
+    "tag": "ИИ · ПРОВЕРКА",
+    "title": "Сумма долей не сходится",
+    "prompt": "После агрегации ИИ сумма по каналам составила 96% от общего итога. Что делать?",
+    "options": [
+      "Опубликовать: 4% — допустимая погрешность округления.",
+      "Увеличить наибольший сегмент на 4%, чтобы сумма сошлась.",
+      "Найти причину расхождения: потерянные строки, дубли, фильтры или разные базы; до этого вывод не публиковать.",
+      "Удалить общий итог из отчёта."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Расхождение может быть округлением, но 4% требуют проверки: пропущенные строки, дубликаты, разные фильтры или периоды. Подгонять сегмент под итог нельзя — это скрывает ошибку. <span style=\"color:var(--faded)\">Источник: Занятие 4 · минимальный стандарт evidence.</span>",
+    "rule": "Сумма вкладов должна согласовываться с общим итогом."
+  },
+  {
+    "tag": "ИИ · ВИЗУАЛИЗАЦИЯ",
+    "title": "Средний чек на дашборде",
+    "prompt": "ИИ построил дашборд, но средний чек получился заметно ниже ожидаемого. В данных строка — позиция заказа. Что вероятнее всего?",
+    "options": [
+      "ИИ неправильно выбрал цвета.",
+      "ИИ усреднил суммы по позициям, а не по заказам; нужно сначала агрегировать до заказа.",
+      "В данных слишком много столбцов.",
+      "Нужно перейти с линейной диаграммы на круговую."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Среднее по позициям — это средняя стоимость позиции, а не средний чек. ИИ мог не учесть единицу наблюдения и granularity. Проверяют, что такое одна строка и на каком уровне считается метрика. <span style=\"color:var(--faded)\">Источник: Занятие 4 · единица и granularity.</span>",
+    "rule": "Перед расчётом проверяем единицу наблюдения и granularity."
+  },
+  {
+    "tag": "ИИ · ВИЗУАЛИЗАЦИЯ",
+    "title": "Рост «почти в три раза»",
+    "prompt": "ИИ пишет: «выручка выросла почти в 3 раза». На графике ось Y начинается с 90, а значения выросли с 95 до 100. Что проверить в первую очередь?",
+    "options": [
+      "Палитру и подписи данных.",
+      "Количество категорий на графике.",
+      "Источник данных.",
+      "Базу и масштаб оси: при начале не с нуля визуальный рост преувеличен; сравнить абсолютные значения."
+    ],
+    "correct": [
+      3
+    ],
+    "explanation": "Обрезанная ось усиливает впечатление роста: 95 → 100 — это около 5%, а не «почти в три раза». Формулировку ИИ проверяют по абсолютным значениям, базе сравнения и масштабу оси. <span style=\"color:var(--faded)\">Источник: Занятие 1 · чтение графика.</span>",
+    "rule": "Проверяй базу оси и абсолютные значения, а не формулировку ИИ."
+  },
+  {
+    "tag": "ИИ · ВЫВОД",
+    "title": "Сезонность по трём месяцам",
+    "prompt": "ИИ пишет: «Падение в марте объясняется сезонностью». В данных только три месяца — январь, февраль, март. Как оценить утверждение?",
+    "options": [
+      "Не принимать как вывод: по трём месяцам нельзя установить сезонность, нужна история за несколько лет.",
+      "Принять: ИИ знает типичные сезонные паттерны.",
+      "Принять, если падение больше 10%.",
+      "Заменить «сезонность» на «тренд» — так точнее."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Сезонность — повторяющийся паттерн, для неё нужно несколько циклов наблюдения. Три месяца не позволяют отделить сезонность от разового колебания или тренда. Это гипотеза для следующего анализа. <span style=\"color:var(--faded)\">Источник: Занятие 4 · границы причинных утверждений.</span>",
+    "rule": "Для сезонности нужна история за несколько лет, а не три точки."
+  },
+  {
+    "tag": "ИИ · ВЫВОД",
+    "title": "Уверенно, но без доказательств",
+    "prompt": "ИИ уверенно называет долю крупнейшей категории — 47%, но не показывает ни формулы, ни ячеек. Какое действие соответствует AI-аудиту?",
+    "options": [
+      "Принять: число выглядит правдоподобно.",
+      "Попросить ИИ повторить ответ более уверенно.",
+      "Потребовать доказательство: формулу, диапазон ячеек или расчёт, и независимо пересчитать.",
+      "Округлить до 50% и указать «примерно»."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Уверенный ответ не является доказательством. В AI-аудите утверждение сопровождают доказательством: формулой, диапазоном ячеек или расчётом, — а затем пересчитывают независимо. <span style=\"color:var(--faded)\">Источник: Занятие 1 · AI-аудит.</span>",
+    "rule": "Уверенность ИИ ≠ evidence. Нужны формула, ячейки и пересчёт."
+  },
+  {
+    "tag": "ИИ · ВЫВОД",
+    "title": "Зачем вести AI-лог",
+    "prompt": "Зачем в паспорт задачи и AI-аудит записывают промпт, версию модели, исправления кода и ограничения данных?",
+    "options": [
+      "Чтобы чат-бот работал быстрее.",
+      "Чтобы результат можно было воспроизвести и независимо проверить, а границу вывода — объяснить.",
+      "Чтобы не проверять расчёты повторно.",
+      "Чтобы заменить этим раздел с выводами."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Лог фиксирует, что поручено ИИ, что проверил человек и какие ограничения действуют. Это делает результат воспроизводимым и объяснимым, но не заменяет проверку и не отменяет выводы. <span style=\"color:var(--faded)\">Источник: Занятие 1 · паспорт и AI-лог.</span>",
+    "rule": "Результат ИИ не становится evidence до независимой проверки."
+  }
+];
+
+const LETTERS = ['A', 'B', 'C', 'D'];
+const state = {
+  idx: 0,
+  answers: QUESTIONS.map(() => []),
+  checked: QUESTIONS.map(() => false)
+};
+
+const stage = document.getElementById('stage');
+const progressFill = document.getElementById('progressFill');
+const progressLabel = document.getElementById('progressLabel');
+const progressScore = document.getElementById('progressScore');
+const cheatModal = document.getElementById('cheatModal');
+
+function escapeHTML(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function isCorrect(q, selected) {
+  if (selected.length !== q.correct.length) return false;
+  const a = [...selected].sort((x, y) => x - y);
+  const b = [...q.correct].sort((x, y) => x - y);
+  return a.every((v, i) => v === b[i]);
+}
+
+function correctCount() {
+  return QUESTIONS.reduce((sum, q, i) => sum + (isCorrect(q, state.answers[i]) ? 1 : 0), 0);
+}
+
+function optionHTML(text, i, selected) {
+  return '<button class="opt' + (selected.includes(i) ? ' sel' : '') + '" type="button" data-i="' + i + '"' +
+    (state.checked[state.idx] ? ' disabled' : '') + '>' +
+    '<span class="letter">' + LETTERS[i] + '</span>' +
+    '<span class="opt-text">' + text + '</span>' +
+    '<span class="mark"></span>' +
+    '</button>';
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[state.idx];
+  const checked = state.checked[state.idx];
+  const selected = state.answers[state.idx];
+  const n = QUESTIONS.length;
+
+  progressLabel.innerHTML = 'Вопрос <b>' + (state.idx + 1) + '</b> из <b>' + n + '</b>';
+  progressFill.style.width = (state.idx / n * 100) + '%';
+  progressScore.innerHTML = 'Правильно: <b>' + correctCount() + '</b>';
+
+  let html = '<article class="qcard">';
+  html += '<div class="qtop"><div class="qno">' + String(state.idx + 1).padStart(2, '0') + '</div>' +
+    '<span class="tag">' + escapeHTML(q.tag) + '</span></div>';
+  html += '<h2>' + escapeHTML(q.title) + '</h2>';
+  html += '<p class="prompt">' + q.prompt + '</p>';
+  html += '<div class="options">';
+  q.options.forEach((opt, i) => { html += optionHTML(opt, i, selected); });
+  html += '</div>';
+  html += '<div class="feedback-slot"></div>';
+  html += '<div class="actions"><span class="kbd-hint">Клавиши 1–4 — выбрать · Enter — дальше</span>';
+  html += '<button class="btn primary" id="mainBtn" type="button" disabled>' +
+    (checked ? 'Дальше →' : 'Проверить') + '</button></div>';
+  html += '</article>';
+
+  stage.innerHTML = html;
+
+  if (checked) {
+    applyCheckedView(q);
+  } else {
+    updateMainButton();
+  }
+}
+
+function updateMainButton() {
+  const btn = document.getElementById('mainBtn');
+  if (!btn) return;
+  if (state.checked[state.idx]) {
+    btn.disabled = false;
+    btn.textContent = state.idx === QUESTIONS.length - 1 ? 'Показать результат →' : 'Дальше →';
+    return;
+  }
+  btn.disabled = state.answers[state.idx].length === 0;
+  btn.textContent = 'Проверить';
+}
+
+function applyCheckedView(q) {
+  const selected = state.answers[state.idx];
+  const ok = isCorrect(q, selected);
+  const buttons = stage.querySelectorAll('.opt');
+
+  buttons.forEach((btn, i) => {
+    btn.disabled = true;
+    btn.classList.remove('sel');
+    const isPicked = selected.includes(i);
+    const isRight = q.correct.includes(i);
+    if (isRight) btn.classList.add('correct');
+    if (isPicked && !isRight) btn.classList.add('wrong');
+    if (!isPicked && !isRight) btn.classList.add('dim');
+    const mark = btn.querySelector('.mark');
+    if (mark) {
+      if (isRight) mark.textContent = 'верно';
+      else if (isPicked) mark.textContent = 'ваш выбор';
+    }
+  });
+
+  const slot = stage.querySelector('.feedback-slot');
+  const correctText = q.correct.map(i => LETTERS[i]).join(', ');
+  slot.innerHTML = '<div class="feedback ' + (ok ? 'ok' : 'no') + '">' +
+    '<div class="fhead">' + (ok ? 'Верно' : 'Неверно') +
+    (ok ? '' : ' · правильный ответ: ' + correctText) + '</div>' +
+    '<p>' + q.explanation + '</p>' +
+    '<div class="rule"><b>Правило:</b> ' + q.rule + '</div>' +
+    '</div>';
+
+  const btn = document.getElementById('mainBtn');
+  if (btn) {
+    btn.disabled = false;
+    btn.textContent = state.idx === QUESTIONS.length - 1 ? 'Показать результат →' : 'Дальше →';
+  }
+  progressScore.innerHTML = 'Правильно: <b>' + correctCount() + '</b>';
+  progressFill.style.width = ((state.idx + 1) / QUESTIONS.length * 100) + '%';
+}
+
+function toggleOption(i) {
+  if (state.checked[state.idx]) return;
+  state.answers[state.idx] = [i];
+  stage.querySelectorAll('.opt').forEach((btn, idx) => {
+    btn.classList.toggle('sel', state.answers[state.idx].includes(idx));
+  });
+  updateMainButton();
+}
+
+function checkAnswer() {
+  if (state.checked[state.idx]) return;
+  if (state.answers[state.idx].length === 0) return;
+  state.checked[state.idx] = true;
+  applyCheckedView(QUESTIONS[state.idx]);
+}
+
+function nextQuestion() {
+  if (!state.checked[state.idx]) {
+    checkAnswer();
+    return;
+  }
+  if (state.idx === QUESTIONS.length - 1) {
+    showResult();
+    return;
+  }
+  state.idx += 1;
+  renderQuestion();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function gradeFor(score, total) {
+  const pct = Math.round(score / total * 100);
+  if (pct >= 90) return {
+    title: 'Данные под контролем',
+    sub: 'Вы уверенно различаете форматы, типы и уровни проверок. Осталось применить это в проекте.'
+  };
+  if (pct >= 70) return {
+    title: 'Уверенная база',
+    sub: 'Основные принципы усвоены. Стоит повторить уровни L1–L4 и типичные ошибки импорта.'
+  };
+  if (pct >= 50) return {
+    title: 'Основа есть, детали хромают',
+    sub: 'Форматы и выбор графика понятны, но проверки и преобразования пока путаются. Откройте шпаргалку и разборы.'
+  };
+  return {
+    title: 'Стоит вернуться к лекциям',
+    sub: 'Начните с цепочки «вопрос → данные → форма → проверка»: она связывает все занятия. Затем пройдите тест ещё раз.'
+  };
+}
+
+function showResult() {
+  const total = QUESTIONS.length;
+  const score = correctCount();
+  const pct = Math.round(score / total * 100);
+  const grade = gradeFor(score, total);
+
+  progressFill.style.width = '100%';
+  progressLabel.innerHTML = 'Тест завершён';
+  progressScore.innerHTML = 'Результат: <b>' + score + ' / ' + total + '</b>';
+
+  let html = '<section class="result">';
+  html += '<div class="result-top">';
+  html += '<div><div class="score-big">' + score + '<small> / ' + total + '</small></div>' +
+    '<div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faded);margin-top:6px">' + pct + '% верно</div></div>';
+  html += '<div style="flex:1;min-width:260px"><div class="grade">' + grade.title + '</div>' +
+    '<div class="grade-sub">' + grade.sub + '</div></div>';
+  html += '</div>';
+
+  html += '<div class="result-stats">';
+  html += '<div><div class="v">' + score + '</div><div class="l">верных ответов</div></div>';
+  html += '<div><div class="v">' + (total - score) + '</div><div class="l">ошибок</div></div>';
+  html += '<div><div class="v">' + pct + '%</div><div class="l">результат</div></div>';
+  html += '</div>';
+
+  html += '<div class="review-head"><h3>Разбор всех вопросов</h3>' +
+    '<button class="btn red" id="restartBtn" type="button">Пройти заново</button></div>';
+
+  QUESTIONS.forEach((q, i) => {
+    const ok = isCorrect(q, state.answers[i]);
+    const picked = state.answers[i].length
+      ? state.answers[i].map(x => LETTERS[x]).join(', ')
+      : '—';
+    const right = q.correct.map(x => LETTERS[x]).join(', ');
+    html += '<details class="rev ' + (ok ? 'ok' : 'no') + '"' + (ok ? '' : ' open') + '>';
+    html += '<summary><span class="ico">' + (ok ? '✓' : '✕') + '</span>' +
+      '<span class="rq">' + (i + 1) + '. ' + escapeHTML(q.title) + '</span>' +
+      '<span class="rt">' + escapeHTML(q.tag) + '</span></summary>';
+    html += '<div class="rev-body">';
+    html += '<div class="ans ' + (ok ? 'good' : 'bad') + '"><b>Ваш ответ:</b> ' + picked + '</div>';
+    if (!ok) html += '<div class="ans good"><b>Правильно:</b> ' + right + '</div>';
+    html += '<div class="why">' + q.explanation + '</div>';
+    html += '</div></details>';
+  });
+
+  html += '</section>';
+  stage.innerHTML = html;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function restart() {
+  state.idx = 0;
+  state.answers = QUESTIONS.map(() => []);
+  state.checked = QUESTIONS.map(() => false);
+  renderQuestion();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+stage.addEventListener('click', (e) => {
+  const opt = e.target.closest('.opt');
+  if (opt) {
+    toggleOption(Number(opt.dataset.i));
+    return;
+  }
+  if (e.target.closest('#mainBtn')) {
+    nextQuestion();
+    return;
+  }
+  if (e.target.closest('#restartBtn')) {
+    restart();
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (cheatModal.classList.contains('open')) {
+    if (e.key === 'Escape') closeCheat();
+    return;
+  }
+  if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+
+  const q = QUESTIONS[state.idx];
+  if (!q || !document.querySelector('.qcard')) return;
+
+  if (/^[1-9]$/.test(e.key)) {
+    const i = Number(e.key) - 1;
+    if (i < q.options.length) {
+      e.preventDefault();
+      toggleOption(i);
+    }
+    return;
+  }
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    nextQuestion();
+  }
+});
+
+// ---------- шпаргалка ----------
+function openCheat() {
+  cheatModal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('cheatClose').focus();
+}
+function closeCheat() {
+  cheatModal.classList.remove('open');
+  document.body.style.overflow = '';
+  document.getElementById('cheatBtn').focus();
+}
+document.getElementById('cheatBtn').addEventListener('click', openCheat);
+document.getElementById('cheatClose').addEventListener('click', closeCheat);
+cheatModal.addEventListener('click', (e) => {
+  if (e.target === cheatModal) closeCheat();
+});
+
+renderQuestion();
+</script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+name: opencode-student
+
+services:
+  sandbox:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        OPENCODE_IMAGE: ${OPENCODE_IMAGE:-ghcr.io/anomalyco/opencode:2.0.32}
+        SANDBOX_UID: ${SANDBOX_UID:-1000}
+        SANDBOX_GID: ${SANDBOX_GID:-1000}
+    image: opencode-student-sandbox:local
+    container_name: opencode-student-sandbox
+    restart: unless-stopped
+    working_dir: /work
+    runtime: ${SANDBOX_RUNTIME:-runsc}
+    user: "${SANDBOX_UID:-1000}:${SANDBOX_GID:-1000}"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: ${SANDBOX_PIDS:-512}
+    mem_limit: ${SANDBOX_MEMORY:-6g}
+    cpus: ${SANDBOX_CPUS:-3.5}
+    shm_size: 256m
+    environment:
+      HOME: /home/sandbox
+      XDG_CONFIG_HOME: /home/sandbox/.config
+      XDG_DATA_HOME: /home/sandbox/.local/share
+      XDG_STATE_HOME: /home/sandbox/.local/state
+      XDG_CACHE_HOME: /home/sandbox/.cache
+      HTTP_PROXY: http://egress:8888
+      HTTPS_PROXY: http://egress:8888
+      # edge — это сам стенд (nginx): к нему обращаться напрямую, без прокси.
+      # gateway — локальный прокси к Vercel AI Gateway: тоже напрямую, без
+      # внешнего прокси (он внутри своей сети, ключ шлюза живёт в нём).
+      NO_PROXY: localhost,127.0.0.1,::1,sandbox,edge,gateway,${EDGE_IP:-172.28.0.5},${GATEWAY_IP:-172.28.0.253},172.28.0.0/16
+      OPENCODE_SERVER_PASSWORD: ${SANDBOX_PASSWORD:?SANDBOX_PASSWORD is required}
+      PUBLIC_URL: ${PUBLIC_URL:-https://94.141.97.249}
+    # gVisor (runsc) не дружит с Docker DNS (127.0.0.11): имена контейнеров не
+    # резолвятся. Прокси — единственное, что песочнице нужно разрешать, поэтому
+    # пишем его адрес в /etc/hosts напрямую (см. статический IP egress ниже).
+    # edge — тоже: по нему песочница проверяет, что опубликованная ссылка
+    # действительно отдаётся (см. /opt/viz/check_page.py).
+    extra_hosts:
+      - "egress:${EGRESS_IP:-172.28.0.254}"
+      - "edge:${EDGE_IP:-172.28.0.5}"
+      - "gateway:${GATEWAY_IP:-172.28.0.253}"
+    tmpfs:
+      - /tmp:size=256m,mode=1777
+    volumes:
+      - sandbox-home:/home/sandbox
+      - /srv/opencode-student/workspace:/work
+      - ./config/opencode.json:/etc/opencode/opencode.json:ro
+      - ./skills/economist-sandbox:/etc/opencode/skills/economist-sandbox:ro
+      # Каталог доступных датасетов (собирается scripts/70-build-catalog.sh
+      # из метаинформации GitHub). Агент читает его, когда студент спрашивает,
+      # какие данные есть, и может обновить его сам.
+      - ./catalog:/opt/catalog:ro
+      # Хелперы стенда (сейчас: new-task.sh — папка задачи с уникальным id).
+      - ./tools:/opt/tools:ro
+      # Hallmark — набор дизайн-правил и тем (копия github.com/Nutlope/hallmark,
+      # только чтение). См. skills/hallmark/SANDBOX-NOTE.md.
+      - ./skills/hallmark:/opt/hallmark:ro
+    networks: [sandbox_net]
+    expose:
+      - "4096"
+    depends_on: [egress]
+
+  egress:
+    build:
+      context: ./egress
+      dockerfile: Dockerfile
+    image: opencode-student-egress:local
+    container_name: opencode-student-egress
+    restart: unless-stopped
+    user: "65534:65534"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp:size=16m
+    networks:
+      sandbox_net:
+        ipv4_address: ${EGRESS_IP:-172.28.0.254}
+      egress_out: {}
+
+  # Прокси к Vercel AI Gateway. Держит настоящий ключ шлюза (в песочнице его
+  # НЕТ — иначе агент достаёт его из /proc/self/environ и может уйти в шлюз
+  # любой платной моделью в обход списка моделей). Пропускает только модели из
+  # белого списка — все они бесплатны, баланс не расходуется.
+  # ВРЕМЕННО до 2026-10-22: откат — убрать сервис gateway, ключ из .env,
+  # блок provider "vercel-free" из config/opencode.json и правило provider.use.
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    image: opencode-student-gateway:local
+    container_name: opencode-student-gateway
+    restart: unless-stopped
+    user: "65534:65534"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      AI_GATEWAY_API_KEY: ${AI_GATEWAY_API_KEY:?AI_GATEWAY_API_KEY is required}
+      ALLOWED_MODELS: ${GATEWAY_ALLOWED_MODELS:-zai/glm-5.3-flash,reflection/beam-free,nvidia/nemotron-3.5-lightning-free}
+      PORT: "8080"
+    tmpfs:
+      - /tmp:size=8m
+    networks:
+      sandbox_net:
+        # Статический адрес: под gVisor Docker DNS не работает (правило 8).
+        ipv4_address: ${GATEWAY_IP:-172.28.0.253}
+      egress_out: {}
+
+  upload-handler:
+    build:
+      context: ./upload-handler
+      dockerfile: Dockerfile
+    image: opencode-upload-handler:local
+    container_name: opencode-upload-handler
+    restart: unless-stopped
+    user: "1000:1000"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      PUBLIC_URL: ${PUBLIC_URL:-https://94.141.97.249}
+    tmpfs:
+      - /tmp:size=64m
+    volumes:
+      - /srv/opencode-student/workspace:/srv/files:rw
+    networks: [sandbox_net, edge_out]
+    expose: ["8080"]
+    depends_on: []
+
+  edge:
+    image: nginx:1.27-alpine
+    container_name: opencode-student-edge
+    restart: unless-stopped
+    environment:
+      ENABLE_TLS: ${ENABLE_TLS:-true}
+      EDGE_HTTPS_PORT: ${EDGE_HTTPS_PORT:-443}
+    volumes:
+      - ./edge/entrypoint.sh:/docker-entrypoint.d/10-sandbox.sh:ro
+      - ./edge/site.http.conf:/etc/nginx/templates/site.http.conf:ro
+      - ./edge/site.tls.conf:/etc/nginx/templates/site.tls.conf:ro
+      - ${TLS_CERT_DIR:-./edge/certs}:/etc/nginx/certs:ro
+      - ./edge/acme:/var/www/acme:ro
+      - ./edge/upload-index.html:/srv/upload-index.html:ro
+      - ./edge/sw.js:/srv/sw.js:ro
+      - ./edge/files-404.html:/srv/files-404.html:ro
+      - ./edge/files-403.html:/srv/files-403.html:ro
+      - /srv/opencode-student/workspace:/srv/files:ro
+      - ./edge/htpasswd:/etc/nginx/htpasswd:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      sandbox_net:
+        # Статический адрес, как у egress: Docker DNS под gVisor не работает,
+        # а песочнице нужно обращаться к edge (см. extra_hosts у sandbox).
+        ipv4_address: ${EDGE_IP:-172.28.0.5}
+      edge_out: {}
+    depends_on: [sandbox, upload-handler]
+
+networks:
+  sandbox_net:
+    internal: true
+    ipam:
+      config:
+        - subnet: ${SANDBOX_SUBNET:-172.28.0.0/24}
+  egress_out: {}
+  edge_out: {}
+
+volumes:
+  sandbox-home:
