@@ -772,3 +772,54 @@ env разошёлся с БД).
       скрипт `92-project-work.sh` его возвращает. Ночной очистке (03:30) БД не касается.
 - [ ] Выбор проекта в браузере (localStorage) сервером не контролируется: у вернувшегося
       студента останется тот проект, который он открывал последним.
+
+---
+
+## 2026-10-30. Новый стенд `45.159.173.129` (на одну пару) + OpenCode Go вместо Vercel
+
+**Задача:** поднять студенческий стенд на новом VPS только на 31.10.2026; по просьбе
+владельца набор моделей — 3 бесплатных (`deepseek`, `glm`, `mimo`) + `Muse Spark 1.3`
+через подписку OpenCode Go, ключ которой взят с основного хоста `45.159.173.65`.
+
+**Что сделано в репозитории (`sandbox-source`):**
+
+1. `gateway/proxy.py` — второй upstream (OpenCode Go): маршрут по имени модели,
+   `OPENCODE_GO_API_KEY` + `GO_ALLOWED_MODELS`, авто-заголовок `x-opencode-session`
+   (без него апстрим отдаёт `400 MissingSessionID`), пересечение белых списков = fatal.
+2. `docker-compose.yml` — у `gateway` появились `OPENCODE_GO_API_KEY` /
+   `GO_ALLOWED_MODELS`; `AI_GATEWAY_API_KEY` больше не обязателен.
+3. `config/opencode.json` — провайдер `vercel-free` заменён на `muse-go`
+   (**не** `opencode-go`), политика `provider.use` на него, 4 модели `opencode`
+   скрыты через `providers.*.models.disabled` в managed-конфиге.
+4. `scripts/31-up-fast.sh` — проверки под новый набор (ключ Go, белый список,
+   ровно 4 модели, отсутствие ключей в песочнице, пинг `deepseek` и `spark`).
+5. `scripts/99-up-new-stand.sh` — **новый**: подъём из скопированного скелета
+   (правит пути, `htpasswd`, self-signed, сборка, LE на IP, датасеты, каталог,
+   user-таймеры, самопроверка). Закрывает дыру «долгого пути» из `DEPLOY_STAND.md`,
+   где `30-up.sh` не делал LE/датасеты/таймеры.
+6. `.env.example` — `DATASETS_DIR`, `OPENCODE_GO_API_KEY`, `GO_ALLOWED_MODELS`.
+
+**Симптом → причина → правка (30.10.2026):**
+
+| Симптом | Причина | Правка |
+|---|---|---|
+| В UI 33 модели, `opencode-go/muse-spark…` → `Error: Upstream credential invalid` | блок провайдера с именем `opencode-go` сливается с каталоговым подписочным провайдером: в UI попадают все 30 моделей подписки, а вызов требует логин | переименовали провайдер в `muse-go` → 4 модели, spark отвечает |
+| `spark` → `400 This Go model trains on request data` | privacy-настройка Go-воркспейса | владелец включил «allow paid endpoints that train on request data» |
+| Стенд остался на self-signed, хотя LE выпустился | `certbot` создаёт `live/` от root с правами 700 → `[ -s … ]` под `deployagent` ложно | chown `edge/letsencrypt` **до** проверки в `99-up-new-stand.sh` |
+| `90-reset.sh` упал: «Каталог с датасетами не найден: /home/deployagent/projects/datasets» | дефолт `DATASETS_DIR` в скрипте — путь хоста разработки | добавили `DATASETS_DIR=/home/deployagent/datasets` в `.env` (и в `.env.example`) |
+| `55-verify-stand.sh` → `502` сразу после сброса | песочница ещё поднималась (первый старт после очистки БД) | подождать ~15 с и повторить |
+
+**Итог проверок:** `31-up-fast --check` — всё зелёное (4 модели: `opencode=3`, `muse-go=1`;
+ключей в песочнице нет; обе модели отвечают; стенд снаружи 200). Изоляция 13/13,
+runtime `runsc`, TLS — Let's Encrypt (issuer `YE2`, до 06.11.2026), `/upload/` без
+пароля 401, с паролем 405 (эндпоинт только POST), `/files/` без пароля.
+
+**Осталось (root, один раз):** `bash /srv/opencode/sandbox/scripts/95-root-setup.sh`
+(квота 30 ГБ на `/srv/opencode/workspace`, ночная очистка 03:30, `enable-linger` —
+на момент сдачи `Linger=no`).
+
+**Побочный эффект:** bootstrap из `ROOT-STEPS.md` случайно выполнили на основном хосте
+`45.159.173.65` — там теперь стоят docker 29.1.3 + runsc и пустой `/srv/opencode`,
+`deployagent` в группе `docker`. На стенд `:4601` не влияет (проверено: `opencode-web`
+и `caddy` активны, образов нет). Либо оставить (удобно для сборки образов), либо
+`systemctl disable --now docker`.

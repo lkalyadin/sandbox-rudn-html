@@ -86,12 +86,12 @@ services:
         ipv4_address: ${EGRESS_IP:-172.28.0.254}
       egress_out: {}
 
-  # Прокси к Vercel AI Gateway. Держит настоящий ключ шлюза (в песочнице его
-  # НЕТ — иначе агент достаёт его из /proc/self/environ и может уйти в шлюз
-  # любой платной моделью в обход списка моделей). Пропускает только модели из
-  # белого списка — все они бесплатны, баланс не расходуется.
-  # ВРЕМЕННО до 2026-10-22: откат — убрать сервис gateway, ключ из .env,
-  # блок provider "vercel-free" из config/opencode.json и правило provider.use.
+  # Прокси к платным моделям (Vercel AI Gateway + OpenCode Go). Держит настоящие
+  # ключи (в песочнице их НЕТ — иначе агент достаёт их из /proc/self/environ и
+  # уходит к провайдеру любой моделью в обход списка). Пропускает только модели
+  # из белых списков: ALLOWED_MODELS → Vercel, GO_ALLOWED_MODELS → OpenCode Go.
+  # Откат: убрать сервис gateway, ключи из .env и блоки provider из
+  # config/opencode.json (provider.use — тоже).
   gateway:
     build:
       context: ./gateway
@@ -105,8 +105,12 @@ services:
     security_opt:
       - no-new-privileges:true
     environment:
-      AI_GATEWAY_API_KEY: ${AI_GATEWAY_API_KEY:?AI_GATEWAY_API_KEY is required}
-      ALLOWED_MODELS: ${GATEWAY_ALLOWED_MODELS:-zai/glm-5.3-flash,reflection/beam-free,nvidia/nemotron-3.5-lightning-free}
+      # Vercel AI Gateway (необязателен: если ALLOWED_MODELS пуст — выключен).
+      AI_GATEWAY_API_KEY: ${AI_GATEWAY_API_KEY:-}
+      ALLOWED_MODELS: ${GATEWAY_ALLOWED_MODELS:-}
+      # OpenCode Go (подписка). Ключ — только здесь, в песочницу не попадает.
+      OPENCODE_GO_API_KEY: ${OPENCODE_GO_API_KEY:-}
+      GO_ALLOWED_MODELS: ${GO_ALLOWED_MODELS:-muse-spark-1.3-contributor}
       PORT: "8080"
     tmpfs:
       - /tmp:size=8m

@@ -11,9 +11,8 @@
 #
 # После перезагрузки сервера контейнеры обычно поднимаются сами (docker
 # включён в автозагрузку, у всех restart: unless-stopped). Этот скрипт
-# нужен, чтобы: поднять то, что не поднялось; убедиться, что прокси к
-# Vercel AI Gateway жив; и получить внятный отчёт «всё зелёное / вот это
-# сломано».
+# нужен, чтобы: поднять то, что не поднялось; убедиться, что прокси к платным
+# моделям жив; и получить внятный отчёт «всё зелёное / вот это сломано».
 set -uo pipefail
 cd "$(dirname "$0")/.."
 
@@ -65,30 +64,31 @@ for svc in sandbox gateway egress edge upload-handler; do
   fi
 done
 
-# ─── 3. Прокси к Vercel AI Gateway ───────────────────────────────────────────
-# Ключ шлюза лежит в контейнере gateway, в песочнице его быть не должно.
-# Если прокси мёртв, модели vercel-free в UI не отвечают.
+# ─── 3. Прокси к платным моделям (Vercel / OpenCode Go) ──────────────────────
+# Ключи лежат в контейнере gateway, в песочнице их быть не должно.
+# Если прокси мёртв, платные модели в UI не отвечают.
 echo
-echo "==> Прокси к Vercel AI Gateway"
-if [ "$(count_env opencode-student-gateway AI_GATEWAY_API_KEY)" = "1" ]; then
-  ok "ключ шлюза на месте (в контейнере gateway)"
+echo "==> Прокси к платным моделям"
+if [ "$(count_env opencode-student-gateway OPENCODE_GO_API_KEY)" = "1" ]; then
+  ok "ключ OpenCode Go на месте (в контейнере gateway)"
 else
-  bad "в контейнере gateway нет ключа AI_GATEWAY_API_KEY — проверьте .env и docker compose up -d gateway"
+  bad "в контейнере gateway нет ключа OPENCODE_GO_API_KEY — проверьте .env и docker compose up -d gateway"
 fi
 
-allowed=$(docker exec opencode-student-gateway sh -lc 'printenv ALLOWED_MODELS' 2>/dev/null || echo "")
+allowed=$(docker exec opencode-student-gateway sh -lc 'printenv GO_ALLOWED_MODELS' 2>/dev/null || echo "")
 if [ -n "$allowed" ]; then
-  ok "белый список: $allowed"
+  ok "Go, белый список: $allowed"
 else
-  bad "ALLOWED_MODELS пуст — прокси не пропустит ни одну модель"
+  bad "GO_ALLOWED_MODELS пуст — прокси не пропустит ни одну модель Go"
 fi
 
-# Ключа в песочнице быть НЕ должно: агент читает /proc/self/environ.
-leak=$(count_env opencode-student-sandbox AI_GATEWAY_API_KEY)
-if [ "$leak" = "0" ]; then
-  ok "в песочнице ключа нет (это правильно)"
+# Ключей в песочнице быть НЕ должно: агент читает /proc/self/environ.
+leak=$(count_env opencode-student-sandbox OPENCODE_GO_API_KEY)
+leak2=$(count_env opencode-student-sandbox AI_GATEWAY_API_KEY)
+if [ "$leak" = "0" ] && [ "$leak2" = "0" ]; then
+  ok "в песочнице ключей нет (это правильно)"
 else
-  bad "в песочнице виден ключ шлюза! Проверьте environment сервиса sandbox в docker-compose.yml"
+  bad "в песочнице виден ключ провайдера! Проверьте environment сервиса sandbox в docker-compose.yml"
 fi
 
 # ─── 4. Модели в UI ──────────────────────────────────────────────────────────
@@ -108,26 +108,45 @@ print(len(d), " ".join(f"{k}={v}" for k, v in sorted(c.items())))
 ' 2>/dev/null || echo "не разобрал")
   ok "$summary"
 
-  # Платные модели в UI быть не должны.
-  paid=$(printf '%s' "$models_json" | python3 -c '
+  # Набор моделей стенда: 3 бесплатных + 1 модель подписки. Посторонних нет.
+  extra=$(printf '%s' "$models_json" | python3 -c '
 import sys, json
+expected = {
+    "opencode": {"deepseek-v4.1-flash-free", "glm-5.3-flash-free", "mimo-v2.6-flash-free"},
+    "muse-go": {"muse-spark-1.3-contributor"},
+}
 d = json.load(sys.stdin)["data"]
-print(" ".join(m["id"] for m in d
-      if m["providerID"].startswith("vercel") and m["id"] not in {
-        "zai/glm-5.3-flash", "reflection/beam-free",
-        "nvidia/nemotron-3.5-lightning-free"}))
-' 2>/dev/null || echo "")
-  if [ -z "$paid" ]; then
-    ok "платных моделей vercel в UI нет"
+print(" ".join("%s/%s" % (m["providerID"], m["id"]) for m in d
+      if m["id"] not in expected.get(m["providerID"], set())))
+' 2>/dev/null || echo "не разобрал")
+  if [ -z "$extra" ]; then
+    ok "лишних моделей в UI нет (ожидаются 3 бесплатных + muse-spark-1.3-contributor)"
   else
-    bad "в UI видны платные модели: $paid"
+    bad "в UI видны неожиданные модели: $extra"
+  fi
+
+  missing=$(printf '%s' "$models_json" | python3 -c '
+import sys, json
+expected = {
+    "opencode": {"deepseek-v4.1-flash-free", "glm-5.3-flash-free", "mimo-v2.6-flash-free"},
+    "muse-go": {"muse-spark-1.3-contributor"},
+}
+d = json.load(sys.stdin)["data"]
+have = {(m["providerID"], m["id"]) for m in d}
+print(" ".join("%s/%s" % (p, i) for p, ids in expected.items() for i in sorted(ids)
+      if (p, i) not in have))
+' 2>/dev/null || echo "не разобрал")
+  if [ -z "$missing" ]; then
+    ok "все ожидаемые модели на месте"
+  else
+    warn "нет моделей: $missing (проверьте config/opencode.json и провайдеры)"
   fi
 fi
 
 # ─── 5. Модели отвечают ──────────────────────────────────────────────────────
 echo
 echo "==> Проверка ответа моделей"
-for m in vercel-free/zai/glm-5.3-flash vercel-free/reflection/beam-free; do
+for m in opencode/deepseek-v4.1-flash-free muse-go/muse-spark-1.3-contributor; do
   ans=$(docker exec opencode-student-sandbox timeout 90 opencode run -m "$m" "say ok" 2>&1 \
     | sed 's/\x1b\[[0-9;]*m//g' | grep -viE "level=INFO" | tail -1)
   if printf '%s' "$ans" | grep -qiE "rate limit|error|не найден|not found"; then
