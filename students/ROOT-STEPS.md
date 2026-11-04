@@ -111,11 +111,11 @@ free -m | tail -2
 ### 3.1. Разовая смена пароля только на одном стенде (это делаю я, не root)
 
 Нужна, когда преподаватель просит другой пароль на конкретном демо-стенде
-(например `demo`), не меняя общую инструкцию:
+(например `<разовый пароль>`), не меняя общую инструкцию:
 
 ```bash
 cd /srv/opencode/sandbox
-sed -i 's/^SANDBOX_PASSWORD=.*/SANDBOX_PASSWORD=demo/' .env
+sed -i 's/^SANDBOX_PASSWORD=.*/SANDBOX_PASSWORD=<SANDBOX_PASSWORD>/' .env
 printf 'opencode:%s\n' "$(openssl passwd -apr1 -stdin <<< demo)" > edge/htpasswd
 chmod 644 edge/htpasswd
 docker compose up -d sandbox          # пересоздаёт контейнер с новым OPENCODE_SERVER_PASSWORD
